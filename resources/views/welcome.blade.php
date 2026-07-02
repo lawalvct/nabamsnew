@@ -148,19 +148,6 @@
 
         <script>
             document.addEventListener('DOMContentLoaded', () => {
-                const navToggle = document.getElementById('nav-toggle');
-                const mobileMenu = document.getElementById('mobile-menu');
-                const openIcon = document.querySelector('[data-menu-open-icon]');
-                const closeIcon = document.querySelector('[data-menu-close-icon]');
-
-                navToggle?.addEventListener('click', () => {
-                    const isOpen = mobileMenu.classList.toggle('hidden') === false;
-
-                    navToggle.setAttribute('aria-expanded', isOpen.toString());
-                    openIcon?.classList.toggle('hidden', isOpen);
-                    closeIcon?.classList.toggle('hidden', !isOpen);
-                });
-
                 const slides = [
                     {
                         label: 'National Association',

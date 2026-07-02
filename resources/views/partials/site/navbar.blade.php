@@ -53,3 +53,24 @@
         </div>
     </div>
 </header>
+
+<script>
+    (() => {
+        const navToggle = document.getElementById('nav-toggle');
+        const mobileMenu = document.getElementById('mobile-menu');
+        const openIcon = document.querySelector('[data-menu-open-icon]');
+        const closeIcon = document.querySelector('[data-menu-close-icon]');
+
+        if (!navToggle || !mobileMenu) {
+            return;
+        }
+
+        navToggle.addEventListener('click', () => {
+            const isOpen = mobileMenu.classList.toggle('hidden') === false;
+
+            navToggle.setAttribute('aria-expanded', isOpen.toString());
+            openIcon?.classList.toggle('hidden', isOpen);
+            closeIcon?.classList.toggle('hidden', !isOpen);
+        });
+    })();
+</script>
