@@ -29,12 +29,12 @@
         <div class="hidden items-center gap-7 text-sm font-semibold text-white lg:flex">
             <a class="transition hover:text-[#F5B400]" href="{{ url('/') }}">Home</a>
             <a class="transition hover:text-[#F5B400]" href="{{ url('/about') }}">About</a>
-            <a class="transition hover:text-[#F5B400]" href="{{ url('/excos') }}">Excos</a>
-            <a class="transition hover:text-[#F5B400]" href="{{ url('/membership') }}">Membership</a>
+            <a class="transition hover:text-[#F5B400]" href="{{ route('excos') }}">Excos</a>
+            <a class="transition hover:text-[#F5B400]" href="#{{ url('/membership') }}">Our Member</a>
             <a class="transition hover:text-[#F5B400]" href="{{ route('register') }}">Register</a>
-            <a class="transition hover:text-[#F5B400]" href="{{ url('/resources') }}">Resources</a>
-            <a class="transition hover:text-[#F5B400]" href="{{ url('/contest') }}">Contest</a>
-            <a class="transition hover:text-[#F5B400]" href="{{ url('/support') }}">Support</a>
+            <a class="transition hover:text-[#F5B400]" href="#{{ url('/resources') }}">Resources</a>
+            <a class="transition hover:text-[#F5B400]" href="#{{ url('/contest') }}">Contest</a>
+           
             <a class="rounded-lg bg-[#F5B400] px-4 py-2.5 font-bold text-[#0A2A6B] transition hover:bg-[#ffd15c]" href="{{ url('/login') }}">Login to Dashboard</a>
         </div>
     </nav>
@@ -43,7 +43,7 @@
         <div class="mx-auto grid max-w-7xl gap-1 py-3 text-sm font-semibold text-white">
             <a class="rounded-lg px-3 py-3 hover:bg-white/10 hover:text-[#F5B400]" href="{{ url('/') }}">Home</a>
             <a class="rounded-lg px-3 py-3 hover:bg-white/10 hover:text-[#F5B400]" href="{{ url('/about') }}">About</a>
-            <a class="rounded-lg px-3 py-3 hover:bg-white/10 hover:text-[#F5B400]" href="{{ url('/excos') }}">Excos</a>
+            <a class="rounded-lg px-3 py-3 hover:bg-white/10 hover:text-[#F5B400]" href="{{ route('excos') }}">Excos</a>
             <a class="rounded-lg px-3 py-3 hover:bg-white/10 hover:text-[#F5B400]" href="{{ url('/membership') }}">Membership</a>
             <a class="rounded-lg px-3 py-3 hover:bg-white/10 hover:text-[#F5B400]" href="{{ route('register') }}">Register</a>
             <a class="rounded-lg px-3 py-3 hover:bg-white/10 hover:text-[#F5B400]" href="{{ url('/resources') }}">Resources</a>

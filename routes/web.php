@@ -13,6 +13,10 @@ Route::get('/about', function () {
     return view('about');
 });
 
+Route::get('/excos', function () {
+    return view('excos');
+})->name('excos');
+
 Route::middleware('guest')->group(function () {
     Route::get('/register', [RegisteredUserController::class, 'create'])->name('register');
     Route::post('/register', [RegisteredUserController::class, 'store'])->middleware('throttle:5,1');
