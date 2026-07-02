@@ -16,10 +16,15 @@ return new class extends Migration
             $table->string('firstname', 50);
             $table->string('lastname', 50)->nullable();
             $table->string('nickname', 50)->nullable();
+            $table->enum('gender', ['Male', 'Female', 'Other'])->nullable();
             $table->string('email', 60)->unique();
             $table->string('password');
-            $table->string('matno', 30)->nullable()->unique();
+            $table->string('matno', 30)->unique();
             $table->string('phone', 30);
+            $table->string('whatsapp_number', 30)->nullable();
+            $table->text('home_address')->nullable();
+            $table->string('department', 100)->default('Business Administration & Management');
+            $table->enum('academic_level', ['ND1', 'ND2', 'ND3', 'HND1', 'HND2', 'HND3', 'GRADUATE'])->default('ND1');
             $table->unsignedInteger('level_id')->default(1)->index();
             $table->enum('member_type', ['Regular', 'Alumni', 'Part-time'])->default('Regular');
             $table->text('expectation_msg')->nullable();

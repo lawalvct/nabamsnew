@@ -6,6 +6,7 @@
         <meta name="description" content="Official homepage of the National Association of Business Administration and Management Students (NABAMS).">
 
         <title>NABAMS - National Association of Business Administration and Management Students</title>
+        <link rel="icon" type="image/png" href="{{ asset('favicon.png') }}">
 
         @fonts
 
@@ -18,7 +19,7 @@
     <body class="min-h-screen bg-white font-sans text-[#2E2E2E] antialiased">
         <div class="bg-[#0A2A6B] text-white">
             <div class="mx-auto flex max-w-7xl flex-col gap-2 px-4 py-3 text-sm sm:px-6 md:flex-row md:items-center md:justify-between lg:px-8">
-                <p class="font-medium">Current Session: 2024-2025</p>
+                <p class="font-medium">Current Session: 2025-2026</p>
                 <a href="tel:07012435051" class="inline-flex w-fit items-center gap-2 rounded-full bg-white/10 px-3 py-1 text-white transition hover:bg-white/20">
                     <span class="h-2 w-2 rounded-full bg-[#F5B400]"></span>
                     Support Contact: 07012435051
@@ -29,7 +30,9 @@
         <header class="sticky top-0 z-50 border-b border-white/10 bg-[#0A2A6B]/95 text-white backdrop-blur">
             <nav class="mx-auto flex max-w-7xl items-center justify-between px-4 py-4 sm:px-6 lg:px-8" aria-label="Main navigation">
                 <a href="{{ url('/') }}" class="flex items-center gap-3">
-                    <span class="grid h-11 w-11 place-items-center rounded-lg bg-white text-base font-black text-[#0A2A6B]">N</span>
+                    <span class="grid h-11 w-11 place-items-center overflow-hidden rounded-lg bg-white p-1">
+                        <img src="{{ asset('logo.png') }}" alt="NABAMS logo" class="h-full w-full object-contain">
+                    </span>
                     <span>
                         <span class="block text-lg font-black leading-none text-white">NABAMS</span>
                         <span class="block text-xs font-semibold uppercase tracking-wide text-[#F5B400]">Leads</span>
@@ -57,6 +60,7 @@
                     <a class="transition hover:text-[#F5B400]" href="{{ url('/about') }}">About</a>
                     <a class="transition hover:text-[#F5B400]" href="{{ url('/excos') }}">Excos</a>
                     <a class="transition hover:text-[#F5B400]" href="{{ url('/membership') }}">Membership</a>
+                    <a class="transition hover:text-[#F5B400]" href="{{ route('register') }}">Register</a>
                     <a class="transition hover:text-[#F5B400]" href="{{ url('/resources') }}">Resources</a>
                     <a class="transition hover:text-[#F5B400]" href="{{ url('/contest') }}">Contest</a>
                     <a class="transition hover:text-[#F5B400]" href="{{ url('/support') }}">Support</a>
@@ -70,6 +74,7 @@
                     <a class="rounded-lg px-3 py-3 hover:bg-white/10 hover:text-[#F5B400]" href="{{ url('/about') }}">About</a>
                     <a class="rounded-lg px-3 py-3 hover:bg-white/10 hover:text-[#F5B400]" href="{{ url('/excos') }}">Excos</a>
                     <a class="rounded-lg px-3 py-3 hover:bg-white/10 hover:text-[#F5B400]" href="{{ url('/membership') }}">Membership</a>
+                    <a class="rounded-lg px-3 py-3 hover:bg-white/10 hover:text-[#F5B400]" href="{{ route('register') }}">Register</a>
                     <a class="rounded-lg px-3 py-3 hover:bg-white/10 hover:text-[#F5B400]" href="{{ url('/resources') }}">Resources</a>
                     <a class="rounded-lg px-3 py-3 hover:bg-white/10 hover:text-[#F5B400]" href="{{ url('/contest') }}">Contest</a>
                     <a class="rounded-lg px-3 py-3 hover:bg-white/10 hover:text-[#F5B400]" href="{{ url('/support') }}">Support</a>
@@ -111,7 +116,7 @@
                     <div class="grid gap-4 rounded-lg border border-white/15 bg-white/10 p-5 shadow-2xl backdrop-blur md:grid-cols-2 lg:grid-cols-1 xl:grid-cols-2">
                         <div class="rounded-lg bg-white p-5 text-[#0A2A6B]">
                             <p class="text-sm font-bold uppercase tracking-wide text-[#F5B400]">Session</p>
-                            <p class="mt-3 text-3xl font-black">2024-2025</p>
+                            <p class="mt-3 text-3xl font-black">2025-2026</p>
                             <p class="mt-2 text-sm leading-6 text-[#2E2E2E]/75">Current academic session for NABAMS activities and student programmes.</p>
                         </div>
                         <div class="rounded-lg bg-[#F5B400] p-5 text-[#0A2A6B]">
@@ -184,6 +189,42 @@
                 </div>
             </section>
 
+            <section class="bg-white py-16 sm:py-20" id="registration">
+                <div class="mx-auto grid max-w-7xl gap-10 px-4 sm:px-6 lg:grid-cols-[0.9fr_1.1fr] lg:items-center lg:px-8">
+                    <div>
+                        <p class="text-sm font-black uppercase tracking-wide text-[#F5B400]">Membership Registration</p>
+                        <h2 class="mt-3 text-3xl font-black text-[#0A2A6B] sm:text-4xl">Become a registered NABAMS member</h2>
+                        <p class="mt-5 max-w-xl text-base leading-8 text-[#2E2E2E]/75">Register once with your personal and academic details, complete the simple security check, and get access to your member dashboard immediately.</p>
+
+                        <div class="mt-7 flex flex-col gap-3 sm:flex-row">
+                            <a href="{{ route('register') }}" class="inline-flex items-center justify-center rounded-lg bg-[#1FA774] px-6 py-3 text-sm font-black text-white transition hover:bg-[#198b61]">Create Account</a>
+                            <a href="{{ route('login') }}" class="inline-flex items-center justify-center rounded-lg border border-[#0A2A6B]/20 px-6 py-3 text-sm font-black text-[#0A2A6B] transition hover:border-[#1FA774] hover:text-[#1FA774]">Login to Dashboard</a>
+                        </div>
+                    </div>
+
+                    <div class="rounded-lg bg-[#0A2A6B] p-5 text-white shadow-xl sm:p-7">
+                        <div class="grid gap-4 sm:grid-cols-2">
+                            <div class="rounded-lg border border-white/10 bg-white/10 p-5">
+                                <p class="text-sm font-black text-[#F5B400]">Personal Info</p>
+                                <p class="mt-2 text-sm leading-6 text-[#F2F2F2]/80">Full name, gender, date of birth, phone, and email.</p>
+                            </div>
+                            <div class="rounded-lg border border-white/10 bg-white/10 p-5">
+                                <p class="text-sm font-black text-[#F5B400]">Academic Info</p>
+                                <p class="mt-2 text-sm leading-6 text-[#F2F2F2]/80">Matric number, department, level, and member type.</p>
+                            </div>
+                            <div class="rounded-lg border border-white/10 bg-white/10 p-5">
+                                <p class="text-sm font-black text-[#F5B400]">Security Check</p>
+                                <p class="mt-2 text-sm leading-6 text-[#F2F2F2]/80">Simple math question plus protected form submission.</p>
+                            </div>
+                            <div class="rounded-lg border border-white/10 bg-white/10 p-5">
+                                <p class="text-sm font-black text-[#F5B400]">Optional Details</p>
+                                <p class="mt-2 text-sm leading-6 text-[#F2F2F2]/80">Passport photo, WhatsApp number, and home address.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
             <section id="contact" class="bg-[#F2F2F2] py-16 sm:py-20">
                 <div class="mx-auto grid max-w-7xl gap-10 px-4 sm:px-6 lg:grid-cols-[0.8fr_1fr] lg:px-8">
                     <div>
@@ -244,7 +285,12 @@
         <footer class="bg-[#0A2A6B] text-[#F2F2F2]">
             <div class="mx-auto grid max-w-7xl gap-10 px-4 py-12 sm:px-6 md:grid-cols-[1.1fr_1.5fr_1fr] lg:px-8">
                 <div>
-                    <a href="{{ url('/') }}" class="text-2xl font-black text-white">NABAMS</a>
+                    <a href="{{ url('/') }}" class="inline-flex items-center gap-3 text-2xl font-black text-white">
+                        <span class="grid h-12 w-12 place-items-center overflow-hidden rounded-lg bg-white p-1">
+                            <img src="{{ asset('logo.png') }}" alt="NABAMS logo" class="h-full w-full object-contain">
+                        </span>
+                        NABAMS
+                    </a>
                     <p class="mt-4 max-w-sm text-sm leading-7 text-[#F2F2F2]/75">National Association of Business Administration and Management Students.</p>
                     <a href="mailto:ogitechnabamsleads@gmail.com" class="mt-4 block break-words text-sm font-semibold text-[#F5B400]">ogitechnabamsleads@gmail.com</a>
                 </div>
@@ -281,6 +327,35 @@
             </div>
         </footer>
 
+        <div id="welcome-modal" class="fixed inset-0 z-[100] hidden items-center justify-center bg-[#0A2A6B]/80 px-4 py-6 backdrop-blur-sm" role="dialog" aria-modal="true" aria-labelledby="welcome-modal-title">
+            <div class="w-full max-w-lg overflow-hidden rounded-lg bg-white shadow-2xl ring-1 ring-white/20">
+                <div class="bg-[#0A2A6B] px-6 py-5 text-white">
+                    <div class="flex items-start justify-between gap-4">
+                        <div>
+                            <p class="text-sm font-black uppercase tracking-wide text-[#F5B400]">Welcome to NABAMS</p>
+                            <h2 id="welcome-modal-title" class="mt-2 text-2xl font-black">Hello, visitor</h2>
+                        </div>
+                        <button type="button" data-close-welcome-modal class="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-lg border border-white/20 text-white transition hover:bg-white/10" aria-label="Close welcome message">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" />
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="p-6 sm:p-7">
+                    <p class="text-base leading-8 text-[#2E2E2E]/75">
+                        Glad to have you here. Register as a NABAMS member to access your dashboard, membership profile, resources, and association updates.
+                    </p>
+
+                    <div class="mt-6 grid gap-3 sm:grid-cols-2">
+                        <a href="{{ route('register') }}" class="inline-flex items-center justify-center rounded-lg bg-[#1FA774] px-5 py-3 text-sm font-black text-white transition hover:bg-[#198b61]">Register Now</a>
+                        <button type="button" data-close-welcome-modal class="inline-flex items-center justify-center rounded-lg border border-[#0A2A6B]/20 px-5 py-3 text-sm font-black text-[#0A2A6B] transition hover:border-[#1FA774] hover:text-[#1FA774]">Maybe Later</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <script>
             document.addEventListener('DOMContentLoaded', () => {
                 const navToggle = document.getElementById('nav-toggle');
@@ -304,7 +379,7 @@
                         note: 'Building capable business leaders through service, learning, and student representation.',
                     },
                     {
-                        label: '2024-2025 Session',
+                        label: '2025-2026 Session',
                         title: 'NABAMS Leads',
                         subtitle: 'Others Follow',
                         note: 'A student body focused on excellence, accountability, and opportunities that move members forward.',
@@ -349,6 +424,35 @@
                 });
 
                 setInterval(() => showSlide((activeSlide + 1) % slides.length), 6500);
+
+                const welcomeModal = document.getElementById('welcome-modal');
+                const closeWelcomeModalButtons = document.querySelectorAll('[data-close-welcome-modal]');
+                const showWelcomeModal = () => {
+                    welcomeModal?.classList.remove('hidden');
+                    welcomeModal?.classList.add('flex');
+                };
+                const closeWelcomeModal = () => {
+                    welcomeModal?.classList.add('hidden');
+                    welcomeModal?.classList.remove('flex');
+                };
+
+                setTimeout(showWelcomeModal, 3000);
+
+                closeWelcomeModalButtons.forEach((button) => {
+                    button.addEventListener('click', closeWelcomeModal);
+                });
+
+                welcomeModal?.addEventListener('click', (event) => {
+                    if (event.target === welcomeModal) {
+                        closeWelcomeModal();
+                    }
+                });
+
+                document.addEventListener('keydown', (event) => {
+                    if (event.key === 'Escape') {
+                        closeWelcomeModal();
+                    }
+                });
             });
         </script>
     </body>

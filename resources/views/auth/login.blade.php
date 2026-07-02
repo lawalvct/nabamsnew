@@ -5,6 +5,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
 
         <title>Login - NABAMS</title>
+        <link rel="icon" type="image/png" href="{{ asset('favicon.png') }}">
 
         @fonts
 
@@ -18,7 +19,9 @@
         <main class="grid min-h-screen lg:grid-cols-[0.95fr_1.05fr]">
             <section class="hidden bg-[#0A2A6B] px-10 py-12 text-white lg:flex lg:flex-col lg:justify-between">
                 <a href="{{ url('/') }}" class="flex items-center gap-3">
-                    <span class="grid h-12 w-12 place-items-center rounded-lg bg-white text-lg font-black text-[#0A2A6B]">N</span>
+                    <span class="grid h-12 w-12 place-items-center overflow-hidden rounded-lg bg-white p-1">
+                        <img src="{{ asset('logo.png') }}" alt="NABAMS logo" class="h-full w-full object-contain">
+                    </span>
                     <span>
                         <span class="block text-xl font-black">NABAMS</span>
                         <span class="block text-sm font-semibold uppercase tracking-wide text-[#F5B400]">Leads</span>
@@ -38,7 +41,9 @@
                 <div class="w-full max-w-md">
                     <div class="mb-8 lg:hidden">
                         <a href="{{ url('/') }}" class="inline-flex items-center gap-3">
-                            <span class="grid h-11 w-11 place-items-center rounded-lg bg-[#0A2A6B] text-base font-black text-white">N</span>
+                            <span class="grid h-11 w-11 place-items-center overflow-hidden rounded-lg bg-white p-1 shadow-sm ring-1 ring-[#0A2A6B]/10">
+                                <img src="{{ asset('logo.png') }}" alt="NABAMS logo" class="h-full w-full object-contain">
+                            </span>
                             <span class="text-lg font-black text-[#0A2A6B]">NABAMS</span>
                         </a>
                     </div>

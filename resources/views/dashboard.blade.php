@@ -5,6 +5,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
 
         <title>Dashboard - NABAMS</title>
+        <link rel="icon" type="image/png" href="{{ asset('favicon.png') }}">
 
         @fonts
 
@@ -18,7 +19,9 @@
         <header class="bg-[#0A2A6B] text-white">
             <div class="mx-auto flex max-w-7xl flex-col gap-4 px-4 py-5 sm:px-6 md:flex-row md:items-center md:justify-between lg:px-8">
                 <a href="{{ url('/') }}" class="flex items-center gap-3">
-                    <span class="grid h-11 w-11 place-items-center rounded-lg bg-white text-base font-black text-[#0A2A6B]">N</span>
+                    <span class="grid h-11 w-11 place-items-center overflow-hidden rounded-lg bg-white p-1">
+                        <img src="{{ asset('logo.png') }}" alt="NABAMS logo" class="h-full w-full object-contain">
+                    </span>
                     <span>
                         <span class="block text-lg font-black leading-none">NABAMS</span>
                         <span class="block text-xs font-semibold uppercase tracking-wide text-[#F5B400]">Dashboard</span>
