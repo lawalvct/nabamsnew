@@ -61,6 +61,12 @@
         </svg>
         @break
 
+    @case('settings')
+        <svg class="{{ $class }}" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" aria-hidden="true">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M12 8a4 4 0 1 0 0 8 4 4 0 0 0 0-8Zm8 4a7.9 7.9 0 0 0-.2-1.7l2-1.5-2-3.5-2.4 1a8 8 0 0 0-3-1.7L14 2h-4l-.4 2.6a8 8 0 0 0-3 1.7l-2.4-1-2 3.5 2 1.5A7.9 7.9 0 0 0 4 12c0 .6.1 1.2.2 1.7l-2 1.5 2 3.5 2.4-1a8 8 0 0 0 3 1.7L10 22h4l.4-2.6a8 8 0 0 0 3-1.7l2.4 1 2-3.5-2-1.5c.1-.5.2-1.1.2-1.7Z" />
+        </svg>
+        @break
+
     @case('admins')
         <svg class="{{ $class }}" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" aria-hidden="true">
             <path stroke-linecap="round" stroke-linejoin="round" d="M12 3 5 6v5c0 4.5 3 8 7 10 4-2 7-5.5 7-10V6l-7-3Zm0 8a2 2 0 1 0 0-4 2 2 0 0 0 0 4Zm-4 6a4 4 0 0 1 8 0" />

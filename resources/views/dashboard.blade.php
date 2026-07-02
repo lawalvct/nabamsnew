@@ -36,6 +36,7 @@
                 ['label' => 'Final Year Projects', 'href' => '#final-year-projects', 'icon' => 'projects'],
                 ['label' => 'Levels', 'href' => '#levels', 'icon' => 'levels'],
                 ['label' => 'Price Settings', 'href' => '#price-settings', 'icon' => 'price-settings'],
+                ['label' => 'Settings', 'href' => '#settings', 'icon' => 'settings'],
                 ['label' => 'Admins', 'href' => '#admins', 'icon' => 'admins'],
                 ['label' => 'Profile', 'href' => '#profile', 'icon' => 'profile'],
             ];
