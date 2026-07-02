@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" class="scroll-smooth">
     <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -16,90 +16,74 @@
         @endif
     </head>
     <body class="min-h-screen bg-[#F2F2F2] font-sans text-[#2E2E2E] antialiased">
-        <header class="bg-[#0A2A6B] text-white">
-            <div class="mx-auto flex max-w-7xl flex-col gap-4 px-4 py-5 sm:px-6 md:flex-row md:items-center md:justify-between lg:px-8">
-                <a href="{{ url('/') }}" class="flex items-center gap-3">
-                    <span class="grid h-11 w-11 place-items-center overflow-hidden rounded-lg bg-white p-1">
-                        <img src="{{ asset('logo.png') }}" alt="NABAMS logo" class="h-full w-full object-contain">
-                    </span>
-                    <span>
-                        <span class="block text-lg font-black leading-none">NABAMS</span>
-                        <span class="block text-xs font-semibold uppercase tracking-wide text-[#F5B400]">Dashboard</span>
-                    </span>
-                </a>
+        @php
+            $isAdmin = strtolower((string) $user->role) === 'admin';
+            $displayName = $user->name ?: $user->firstname ?: 'NABAMS Member';
+            $initials = collect(explode(' ', trim($displayName)))
+                ->filter()
+                ->take(2)
+                ->map(fn ($name) => strtoupper(substr($name, 0, 1)))
+                ->implode('');
 
-                <form action="{{ route('logout') }}" method="POST">
-                    @csrf
-                    <button type="submit" class="rounded-lg bg-[#F5B400] px-4 py-2.5 text-sm font-black text-[#0A2A6B] transition hover:bg-[#ffd15c]">Logout</button>
-                </form>
+            $adminMenus = [
+                ['label' => 'Academic Session', 'href' => '#academic-session', 'icon' => 'AS'],
+                ['label' => 'Transactions', 'href' => '#transactions', 'icon' => 'TR'],
+                ['label' => 'CMS', 'href' => '#cms', 'icon' => 'CM'],
+                ['label' => 'Resources', 'href' => '#resources', 'icon' => 'RS'],
+                ['label' => 'Election', 'href' => '#election', 'icon' => 'EL'],
+                ['label' => 'Contest', 'href' => '#contest', 'icon' => 'CO'],
+                ['label' => 'Members', 'href' => '#members', 'icon' => 'MB'],
+                ['label' => 'Final Year Projects', 'href' => '#final-year-projects', 'icon' => 'FP'],
+                ['label' => 'Levels', 'href' => '#levels', 'icon' => 'LV'],
+                ['label' => 'Price Settings', 'href' => '#price-settings', 'icon' => 'PS'],
+                ['label' => 'Admins', 'href' => '#admins', 'icon' => 'AD'],
+                ['label' => 'Profile', 'href' => '#profile', 'icon' => 'PR'],
+            ];
+
+            $memberMenus = [
+                ['label' => 'Dashboard', 'href' => '#dashboard', 'icon' => 'DB'],
+                ['label' => 'Transactions', 'href' => '#transactions', 'icon' => 'TR'],
+                ['label' => 'Resources', 'href' => '#resources', 'icon' => 'RS'],
+                ['label' => 'Election', 'href' => '#election', 'icon' => 'EL'],
+                ['label' => 'Contest', 'href' => '#contest', 'icon' => 'CO'],
+                ['label' => 'My Project', 'href' => '#my-project', 'icon' => 'MP'],
+                ['label' => 'Fees', 'href' => '#fees', 'icon' => 'FE'],
+                ['label' => 'Profile', 'href' => '#profile', 'icon' => 'PR'],
+            ];
+
+            $menus = $isAdmin ? $adminMenus : $memberMenus;
+            $mobileMenus = $isAdmin
+                ? collect($menus)->whereIn('label', ['Academic Session', 'Transactions', 'Members', 'Resources', 'Profile'])->values()
+                : collect($menus)->whereIn('label', ['Dashboard', 'Transactions', 'Resources', 'Fees', 'Profile'])->values();
+
+            $quickStats = $isAdmin
+                ? [
+                    ['label' => 'Members', 'value' => '4,612', 'hint' => 'Legacy user base', 'tone' => 'green'],
+                    ['label' => 'Fee Status', 'value' => 'Active', 'hint' => 'Payment tracking ready', 'tone' => 'blue'],
+                    ['label' => 'Contest', 'value' => 'Open', 'hint' => 'Election module prepared', 'tone' => 'gold'],
+                ]
+                : [
+                    ['label' => 'Role', 'value' => $user->role, 'hint' => 'Account access level', 'tone' => 'blue'],
+                    ['label' => 'Membership', 'value' => $user->member_type, 'hint' => 'Registered member type', 'tone' => 'gold'],
+                    ['label' => 'Fee Paid', 'value' => $user->fee_paid, 'hint' => 'Current payment status', 'tone' => $user->fee_paid === 'Yes' ? 'green' : 'blue'],
+                ];
+        @endphp
+
+        <div class="min-h-screen lg:grid lg:grid-cols-[280px_1fr]">
+            @include('partials.dashboard.sidebar')
+
+            <div class="lg:col-start-2">
+                @include('partials.dashboard.topbar')
+
+                <main class="px-4 pb-28 pt-6 sm:px-6 lg:px-8 lg:pb-10">
+                    @include('partials.dashboard.overview')
+                    @include('partials.dashboard.stat-cards')
+                    @include('partials.dashboard.workspace')
+                    @include('partials.dashboard.next-step')
+                </main>
             </div>
-        </header>
+        </div>
 
-        <main class="mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-8">
-            <section class="rounded-lg bg-white p-6 shadow-xl ring-1 ring-[#0A2A6B]/10 sm:p-8">
-                <p class="text-sm font-black uppercase tracking-wide text-[#F5B400]">Welcome</p>
-                <h1 class="mt-3 text-3xl font-black text-[#0A2A6B] sm:text-4xl">{{ $user->name ?: $user->firstname }}</h1>
-                <p class="mt-4 max-w-3xl text-base leading-8 text-[#2E2E2E]/75">Your NABAMS dashboard is ready. This area can later hold profile editing, payment status, resources, contests, and member updates.</p>
-            </section>
-
-            <section class="mt-8 grid gap-5 md:grid-cols-3">
-                <div class="rounded-lg bg-white p-6 shadow-sm ring-1 ring-[#0A2A6B]/10">
-                    <p class="text-sm font-black uppercase tracking-wide text-[#F5B400]">Role</p>
-                    <p class="mt-3 text-2xl font-black text-[#0A2A6B]">{{ $user->role }}</p>
-                </div>
-
-                <div class="rounded-lg bg-white p-6 shadow-sm ring-1 ring-[#0A2A6B]/10">
-                    <p class="text-sm font-black uppercase tracking-wide text-[#F5B400]">Membership</p>
-                    <p class="mt-3 text-2xl font-black text-[#0A2A6B]">{{ $user->member_type }}</p>
-                </div>
-
-                <div class="rounded-lg bg-white p-6 shadow-sm ring-1 ring-[#0A2A6B]/10">
-                    <p class="text-sm font-black uppercase tracking-wide text-[#F5B400]">Fee Paid</p>
-                    <p class="mt-3 text-2xl font-black {{ $user->fee_paid === 'Yes' ? 'text-[#1FA774]' : 'text-[#0A2A6B]' }}">{{ $user->fee_paid }}</p>
-                </div>
-            </section>
-
-            <section class="mt-8 grid gap-6 lg:grid-cols-[0.8fr_1.2fr]">
-                <div class="rounded-lg bg-[#0A2A6B] p-6 text-white shadow-xl">
-                    <h2 class="text-xl font-black">Account Status</h2>
-                    <div class="mt-5 grid gap-3 text-sm">
-                        <div class="flex items-center justify-between gap-4 border-b border-white/10 pb-3">
-                            <span class="text-[#F2F2F2]/75">Active</span>
-                            <span class="font-black text-[#F5B400]">{{ $user->is_active }}</span>
-                        </div>
-                        <div class="flex items-center justify-between gap-4 border-b border-white/10 pb-3">
-                            <span class="text-[#F2F2F2]/75">Banned</span>
-                            <span class="font-black text-[#F5B400]">{{ $user->is_ban }}</span>
-                        </div>
-                        <div class="flex items-center justify-between gap-4">
-                            <span class="text-[#F2F2F2]/75">Level ID</span>
-                            <span class="font-black text-[#F5B400]">{{ $user->level_id }}</span>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="rounded-lg bg-white p-6 shadow-sm ring-1 ring-[#0A2A6B]/10">
-                    <h2 class="text-xl font-black text-[#0A2A6B]">Profile Information</h2>
-                    <dl class="mt-5 grid gap-4 sm:grid-cols-2">
-                        <div>
-                            <dt class="text-sm font-bold text-[#2E2E2E]/60">Email</dt>
-                            <dd class="mt-1 break-words font-semibold text-[#2E2E2E]">{{ $user->email }}</dd>
-                        </div>
-                        <div>
-                            <dt class="text-sm font-bold text-[#2E2E2E]/60">Phone</dt>
-                            <dd class="mt-1 font-semibold text-[#2E2E2E]">{{ $user->phone }}</dd>
-                        </div>
-                        <div>
-                            <dt class="text-sm font-bold text-[#2E2E2E]/60">Matric Number</dt>
-                            <dd class="mt-1 font-semibold text-[#2E2E2E]">{{ $user->matno ?? 'Not provided' }}</dd>
-                        </div>
-                        <div>
-                            <dt class="text-sm font-bold text-[#2E2E2E]/60">Session</dt>
-                            <dd class="mt-1 font-semibold text-[#2E2E2E]">{{ $user->session_start ?? '----' }} - {{ $user->session_end ?? '----' }}</dd>
-                        </div>
-                    </dl>
-                </div>
-            </section>
-        </main>
+        @include('partials.dashboard.mobile-nav')
     </body>
 </html>
