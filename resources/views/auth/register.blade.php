@@ -98,11 +98,31 @@
                                 @error('gender') <span class="text-xs font-black text-[#F5B400]">{{ $message }}</span> @enderror
                             </label>
 
-                            <label class="grid gap-2 text-sm font-bold text-[#0A2A6B]">
+                            <div class="grid gap-2 text-sm font-bold text-[#0A2A6B]">
                                 Date of Birth
-                                <input name="dob" value="{{ old('dob') }}" type="date" required class="rounded-lg border border-[#0A2A6B]/15 px-4 py-3 font-normal text-[#2E2E2E] outline-none transition focus:border-[#F5B400] focus:ring-4 focus:ring-[#F5B400]/20">
+                                <input type="hidden" id="dob" name="dob" value="{{ old('dob') }}">
+                                <div class="grid grid-cols-3 gap-2">
+                                    <select id="dob_day" class="rounded-lg border border-[#0A2A6B]/15 px-3 py-3 font-normal text-[#2E2E2E] outline-none transition focus:border-[#F5B400] focus:ring-4 focus:ring-[#F5B400]/20">
+                                        <option value="">Day</option>
+                                        @for ($d = 1; $d <= 31; $d++)
+                                            <option value="{{ $d }}">{{ $d }}</option>
+                                        @endfor
+                                    </select>
+                                    <select id="dob_month" class="rounded-lg border border-[#0A2A6B]/15 px-3 py-3 font-normal text-[#2E2E2E] outline-none transition focus:border-[#F5B400] focus:ring-4 focus:ring-[#F5B400]/20">
+                                        <option value="">Month</option>
+                                        @foreach (['January','February','March','April','May','June','July','August','September','October','November','December'] as $i => $month)
+                                            <option value="{{ $i + 1 }}">{{ $month }}</option>
+                                        @endforeach
+                                    </select>
+                                    <select id="dob_year" class="rounded-lg border border-[#0A2A6B]/15 px-3 py-3 font-normal text-[#2E2E2E] outline-none transition focus:border-[#F5B400] focus:ring-4 focus:ring-[#F5B400]/20">
+                                        <option value="">Year</option>
+                                        @for ($y = date('Y'); $y >= 1990; $y--)
+                                            <option value="{{ $y }}">{{ $y }}</option>
+                                        @endfor
+                                    </select>
+                                </div>
                                 @error('dob') <span class="text-xs font-black text-[#F5B400]">{{ $message }}</span> @enderror
-                            </label>
+                            </div>
 
                             <label class="grid gap-2 text-sm font-bold text-[#0A2A6B]">
                                 Phone Number
@@ -254,6 +274,31 @@
                     chevron.style.transform = open ? '' : 'rotate(180deg)';
                 });
 
+                // DOB dropdowns
+                const dobHidden = document.getElementById('dob');
+                const dobDay = document.getElementById('dob_day');
+                const dobMonth = document.getElementById('dob_month');
+                const dobYear = document.getElementById('dob_year');
+
+                const assembleDob = () => {
+                    const d = dobDay.value, m = dobMonth.value, y = dobYear.value;
+                    dobHidden.value = (d && m && y)
+                        ? `${y}-${String(m).padStart(2,'0')}-${String(d).padStart(2,'0')}`
+                        : '';
+                };
+
+                // Restore old value into dropdowns
+                if (dobHidden.value) {
+                    const parts = dobHidden.value.split('-');
+                    if (parts.length === 3) {
+                        dobYear.value  = parseInt(parts[0], 10);
+                        dobMonth.value = parseInt(parts[1], 10);
+                        dobDay.value   = parseInt(parts[2], 10);
+                    }
+                }
+
+                [dobDay, dobMonth, dobYear].forEach(el => el.addEventListener('change', assembleDob));
+
                 const form = document.getElementById('registration-form');
                 const button = document.getElementById('registration-submit');
                 const spinner = document.getElementById('registration-spinner');
@@ -267,6 +312,23 @@
                 });
 
                 form?.addEventListener('submit', (e) => {
+                    // DOB validation
+                    if (!dobDay.value || !dobMonth.value || !dobYear.value) {
+                        e.preventDefault();
+                        dobDay.classList.add('border-red-400');
+                        dobMonth.classList.add('border-red-400');
+                        dobYear.classList.add('border-red-400');
+                        dobDay.focus();
+                        return;
+                    }
+                    const selected = new Date(dobYear.value, dobMonth.value - 1, dobDay.value);
+                    if (selected >= new Date()) {
+                        e.preventDefault();
+                        dobYear.classList.add('border-red-400');
+                        dobYear.focus();
+                        return;
+                    }
+                    [dobDay, dobMonth, dobYear].forEach(el => el.classList.remove('border-red-400'));
                     const expected = parseInt(securityInput.dataset.expected, 10);
                     const given = parseInt(securityInput.value.trim(), 10);
 
