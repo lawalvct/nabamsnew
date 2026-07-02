@@ -11,7 +11,9 @@
         <div class="mt-6 grid gap-3 sm:grid-cols-2">
             @foreach (collect($menus)->take(6) as $menu)
                 <a href="{{ $menu['href'] }}" class="flex items-center gap-3 rounded-lg border border-[#0A2A6B]/10 bg-[#F2F2F2] p-4 transition hover:border-[#1FA774] hover:bg-white">
-                    <span class="grid h-10 w-10 shrink-0 place-items-center rounded-lg bg-[#0A2A6B] text-xs font-black text-[#F5B400]">{{ $menu['icon'] }}</span>
+                    <span class="grid h-10 w-10 shrink-0 place-items-center rounded-lg bg-[#0A2A6B] text-[#F5B400]">
+                        @include('partials.dashboard.menu-icon', ['name' => $menu['icon'], 'class' => 'h-5 w-5'])
+                    </span>
                     <span class="font-black text-[#0A2A6B]">{{ $menu['label'] }}</span>
                 </a>
             @endforeach

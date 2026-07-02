@@ -26,29 +26,29 @@
                 ->implode('');
 
             $adminMenus = [
-                ['label' => 'Academic Session', 'href' => '#academic-session', 'icon' => 'AS'],
-                ['label' => 'Transactions', 'href' => '#transactions', 'icon' => 'TR'],
-                ['label' => 'CMS', 'href' => '#cms', 'icon' => 'CM'],
-                ['label' => 'Resources', 'href' => '#resources', 'icon' => 'RS'],
-                ['label' => 'Election', 'href' => '#election', 'icon' => 'EL'],
-                ['label' => 'Contest', 'href' => '#contest', 'icon' => 'CO'],
-                ['label' => 'Members', 'href' => '#members', 'icon' => 'MB'],
-                ['label' => 'Final Year Projects', 'href' => '#final-year-projects', 'icon' => 'FP'],
-                ['label' => 'Levels', 'href' => '#levels', 'icon' => 'LV'],
-                ['label' => 'Price Settings', 'href' => '#price-settings', 'icon' => 'PS'],
-                ['label' => 'Admins', 'href' => '#admins', 'icon' => 'AD'],
-                ['label' => 'Profile', 'href' => '#profile', 'icon' => 'PR'],
+                ['label' => 'Academic Session', 'href' => '#academic-session', 'icon' => 'academic-session'],
+                ['label' => 'Transactions', 'href' => '#transactions', 'icon' => 'transactions'],
+                ['label' => 'CMS', 'href' => '#cms', 'icon' => 'cms'],
+                ['label' => 'Resources', 'href' => '#resources', 'icon' => 'resources'],
+                ['label' => 'Election', 'href' => '#election', 'icon' => 'election'],
+                ['label' => 'Contest', 'href' => '#contest', 'icon' => 'contest'],
+                ['label' => 'Members', 'href' => '#members', 'icon' => 'members'],
+                ['label' => 'Final Year Projects', 'href' => '#final-year-projects', 'icon' => 'projects'],
+                ['label' => 'Levels', 'href' => '#levels', 'icon' => 'levels'],
+                ['label' => 'Price Settings', 'href' => '#price-settings', 'icon' => 'price-settings'],
+                ['label' => 'Admins', 'href' => '#admins', 'icon' => 'admins'],
+                ['label' => 'Profile', 'href' => '#profile', 'icon' => 'profile'],
             ];
 
             $memberMenus = [
-                ['label' => 'Dashboard', 'href' => '#dashboard', 'icon' => 'DB'],
-                ['label' => 'Transactions', 'href' => '#transactions', 'icon' => 'TR'],
-                ['label' => 'Resources', 'href' => '#resources', 'icon' => 'RS'],
-                ['label' => 'Election', 'href' => '#election', 'icon' => 'EL'],
-                ['label' => 'Contest', 'href' => '#contest', 'icon' => 'CO'],
-                ['label' => 'My Project', 'href' => '#my-project', 'icon' => 'MP'],
-                ['label' => 'Fees', 'href' => '#fees', 'icon' => 'FE'],
-                ['label' => 'Profile', 'href' => '#profile', 'icon' => 'PR'],
+                ['label' => 'Dashboard', 'href' => '#dashboard', 'icon' => 'dashboard'],
+                ['label' => 'Transactions', 'href' => '#transactions', 'icon' => 'transactions'],
+                ['label' => 'Resources', 'href' => '#resources', 'icon' => 'resources'],
+                ['label' => 'Election', 'href' => '#election', 'icon' => 'election'],
+                ['label' => 'Contest', 'href' => '#contest', 'icon' => 'contest'],
+                ['label' => 'My Project', 'href' => '#my-project', 'icon' => 'projects'],
+                ['label' => 'Fees', 'href' => '#fees', 'icon' => 'fees'],
+                ['label' => 'Profile', 'href' => '#profile', 'icon' => 'profile'],
             ];
 
             $menus = $isAdmin ? $adminMenus : $memberMenus;
