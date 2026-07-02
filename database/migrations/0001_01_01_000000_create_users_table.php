@@ -13,12 +13,33 @@ return new class extends Migration
     {
         Schema::create('users', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
-            $table->string('email')->unique();
-            $table->timestamp('email_verified_at')->nullable();
+            $table->string('firstname', 50);
+            $table->string('lastname', 50)->nullable();
+            $table->string('nickname', 50)->nullable();
+            $table->string('email', 60)->unique();
             $table->string('password');
+            $table->string('matno', 30)->nullable()->unique();
+            $table->string('phone', 30);
+            $table->unsignedInteger('level_id')->default(1)->index();
+            $table->enum('member_type', ['Regular', 'Alumni', 'Part-time'])->default('Regular');
+            $table->text('expectation_msg')->nullable();
+            $table->string('session_start', 15)->nullable();
+            $table->string('session_end', 15)->nullable();
+            $table->enum('is_active', ['Yes', 'No'])->default('No')->index();
+            $table->enum('is_ban', ['Yes', 'No'])->default('No')->index();
+            $table->enum('fee_paid', ['Yes', 'No'])->default('No');
+            $table->enum('role', ['Member', 'Admin', 'Lecturer'])->default('Member')->index();
+            $table->text('bio')->nullable();
+            $table->date('dob')->nullable();
+            $table->string('image', 100)->nullable();
+            $table->string('facebook_link', 100)->nullable();
+            $table->string('x_link', 100)->nullable();
+            $table->string('linkedin_link', 100)->nullable();
+            $table->timestamp('email_verified_at')->nullable();
+            $table->unsignedInteger('user_role_id')->default(2)->index();
             $table->rememberToken();
-            $table->timestamps();
+            $table->timestamp('created_at')->useCurrent();
+            $table->timestamp('updated_at')->useCurrent()->useCurrentOnUpdate();
         });
 
         Schema::create('password_reset_tokens', function (Blueprint $table) {
