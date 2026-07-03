@@ -48,12 +48,12 @@ class AppServiceProvider extends ServiceProvider
                 ['label' => 'Resources', 'href' => '#resources', 'icon' => 'resources', 'active' => false],
                 ['label' => 'Election', 'href' => route('admin.election.positions.index'), 'icon' => 'election', 'active' => request()->routeIs('admin.election.*')],
                 ['label' => 'Contest', 'href' => '#contest', 'icon' => 'contest', 'active' => false],
-                ['label' => 'Members', 'href' => '#members', 'icon' => 'members', 'active' => false],
+                ['label' => 'Members', 'href' => route('admin.members.index'), 'icon' => 'members', 'active' => request()->routeIs('admin.members.*')],
                 ['label' => 'Final Year Projects', 'href' => '#final-year-projects', 'icon' => 'projects', 'active' => false],
                 ['label' => 'Levels', 'href' => '#levels', 'icon' => 'levels', 'active' => false],
                 ['label' => 'Price Settings', 'href' => '#price-settings', 'icon' => 'price-settings', 'active' => false],
                 ['label' => 'Settings', 'href' => route('admin.settings.edit'), 'icon' => 'settings', 'active' => request()->routeIs('admin.settings.*')],
-                ['label' => 'Admins', 'href' => '#admins', 'icon' => 'admins', 'active' => false],
+                ['label' => 'Admins', 'href' => route('admin.admins.index'), 'icon' => 'admins', 'active' => request()->routeIs('admin.admins.*')],
                 ['label' => 'Profile', 'href' => route('profile.edit'), 'icon' => 'profile', 'active' => request()->routeIs('profile.*')],
             ];
 

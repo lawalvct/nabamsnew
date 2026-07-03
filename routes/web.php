@@ -1,9 +1,11 @@
 <?php
 
 use App\Http\Controllers\Admin\AcademicSessionController;
+use App\Http\Controllers\Admin\AdministratorController;
 use App\Http\Controllers\Admin\ElectionAspirantController;
 use App\Http\Controllers\Admin\ElectionPositionController;
 use App\Http\Controllers\Admin\ElectionVoteController;
+use App\Http\Controllers\Admin\MemberController;
 use App\Http\Controllers\Admin\SettingController;
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\Auth\RegisteredUserController;
@@ -65,6 +67,12 @@ Route::middleware('auth')->group(function () {
 
         Route::get('/settings', [SettingController::class, 'edit'])->name('settings.edit');
         Route::put('/settings', [SettingController::class, 'update'])->middleware('throttle:10,1')->name('settings.update');
+        Route::resource('members', MemberController::class)
+            ->parameters(['members' => 'member'])
+            ->only(['index', 'show', 'edit', 'update']);
+        Route::resource('admins', AdministratorController::class)
+            ->parameters(['admins' => 'admin'])
+            ->except('show');
     });
 
     Route::post('/logout', [AuthenticatedSessionController::class, 'destroy'])->name('logout');

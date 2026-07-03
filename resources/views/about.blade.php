@@ -34,11 +34,11 @@
 
                     <div class="rounded-lg border border-white/15 bg-white/10 p-5 shadow-2xl backdrop-blur">
                         <div class="rounded-lg bg-white p-4">
-                            <img src="{{ asset('uploads/about/akingbade.jpg') }}" alt="Mr. Waliu Akingbade" class="aspect-[4/5] w-full rounded-lg object-cover">
+                            <img src="{{ asset('uploads/about/mrakingbade.jpg') }}" alt="Mr. Waliu Akingbade" class="aspect-[4/5] w-full rounded-lg object-cover">
                         </div>
                         <div class="mt-4 rounded-lg bg-[#F5B400] px-5 py-4 text-[#0A2A6B]">
-                            <p class="text-sm font-black uppercase tracking-wide">Featured</p>
-                            <h2 class="mt-1 text-2xl font-black">Mr. Waliu Akingbade</h2>
+                            <p class="text-sm font-black uppercase tracking-wide">HOD</p>
+                            <h2 class="mt-1 text-2xl font-black">Mr. Waliu Olorunwa Akingbade</h2>
                         </div>
                     </div>
                 </div>
