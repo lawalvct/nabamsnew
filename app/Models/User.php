@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Attributes\Hidden;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Facades\Storage;
 
 #[Hidden(['password', 'remember_token'])]
 class User extends Authenticatable
@@ -69,5 +70,33 @@ class User extends Authenticatable
     public function getNameAttribute(): string
     {
         return trim($this->firstname.' '.$this->lastname);
+    }
+
+    public function getImageUrlAttribute(): ?string
+    {
+        if (! $this->image) {
+            return null;
+        }
+
+        if (str_starts_with($this->image, 'http://') || str_starts_with($this->image, 'https://')) {
+            return $this->image;
+        }
+
+        if (str_starts_with($this->image, 'storage/')) {
+            return asset($this->image);
+        }
+
+        if (str_starts_with($this->image, 'profile_photos/') || str_starts_with($this->image, 'passport_photographs/')) {
+            return route('profile.photo', [
+                'directory' => dirname($this->image),
+                'filename' => basename($this->image),
+            ]);
+        }
+
+        if (str_starts_with($this->image, 'uploads/')) {
+            return asset($this->image);
+        }
+
+        return Storage::disk('public')->url($this->image);
     }
 }

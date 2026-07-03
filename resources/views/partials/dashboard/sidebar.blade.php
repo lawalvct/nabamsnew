@@ -29,7 +29,7 @@
         <div class="grid gap-1">
             @foreach ($menus as $index => $menu)
                 @php
-                    $isActive = $index === 0;
+                    $isActive = $menu['active'] ?? false;
                     $linkClass = $isActive
                         ? 'bg-[#F5B400] text-[#0A2A6B] shadow-lg shadow-black/10 hover:bg-[#ffd15c] hover:text-[#0A2A6B]'
                         : 'text-white/78 hover:bg-white/10 hover:text-white';
@@ -39,7 +39,7 @@
                 @endphp
 
                 <a
-                    href="{{ $index === 0 ? route('dashboard') : $menu['href'] }}"
+                    href="{{ $menu['href'] }}"
                     class="group flex items-center gap-3 rounded-lg px-3 py-3 text-sm font-bold transition {{ $linkClass }}"
                 >
                     <span class="grid h-9 w-9 shrink-0 place-items-center rounded-lg transition {{ $iconClass }}">

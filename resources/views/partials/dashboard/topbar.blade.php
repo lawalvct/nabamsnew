@@ -11,14 +11,14 @@
         </div>
 
         <div class="flex items-center gap-3">
-            <a href="#profile" class="hidden rounded-lg border border-[#0A2A6B]/10 px-4 py-2 text-sm font-black text-[#0A2A6B] transition hover:border-[#1FA774] hover:text-[#1FA774] sm:inline-flex">Profile</a>
+            <a href="{{ route('profile.edit') }}" class="hidden rounded-lg border border-[#0A2A6B]/10 px-4 py-2 text-sm font-black text-[#0A2A6B] transition hover:border-[#1FA774] hover:text-[#1FA774] sm:inline-flex">Profile</a>
             <form action="{{ route('logout') }}" method="POST" class="hidden sm:block lg:hidden">
                 @csrf
                 <button type="submit" class="rounded-lg bg-[#F5B400] px-4 py-2 text-sm font-black text-[#0A2A6B] transition hover:bg-[#ffd15c]">Logout</button>
             </form>
             <div class="grid h-11 w-11 shrink-0 place-items-center overflow-hidden rounded-lg bg-[#0A2A6B] text-sm font-black text-white">
-                @if ($user->image)
-                    <img src="{{ asset($user->image) }}" alt="{{ $displayName }}" class="h-full w-full object-cover">
+                @if ($user->image_url)
+                    <img src="{{ $user->image_url }}" alt="{{ $displayName }}" class="h-full w-full object-cover">
                 @else
                     {{ $initials ?: 'NM' }}
                 @endif

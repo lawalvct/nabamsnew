@@ -2,10 +2,10 @@
     <div class="mx-auto grid max-w-md grid-cols-5 gap-1">
         @foreach ($mobileMenus as $index => $menu)
             @php
-                $isActive = $index === 0;
+                $isActive = $menu['active'] ?? false;
             @endphp
 
-            <a href="{{ $isActive ? route('dashboard') : $menu['href'] }}" class="flex min-w-0 flex-col items-center justify-center gap-1 rounded-lg px-2 py-2 text-center {{ $isActive ? 'bg-[#0A2A6B] text-white shadow-lg shadow-[#0A2A6B]/20' : 'text-[#0A2A6B]' }}">
+            <a href="{{ $menu['href'] }}" class="flex min-w-0 flex-col items-center justify-center gap-1 rounded-lg px-2 py-2 text-center {{ $isActive ? 'bg-[#0A2A6B] text-white shadow-lg shadow-[#0A2A6B]/20' : 'text-[#0A2A6B]' }}">
                 <span class="grid h-8 w-8 place-items-center rounded-lg {{ $isActive ? 'bg-[#F5B400] text-[#0A2A6B]' : 'bg-[#F2F2F2] text-[#0A2A6B]' }}">
                     @include('partials.dashboard.menu-icon', ['name' => $menu['icon'], 'class' => 'h-4 w-4'])
                 </span>

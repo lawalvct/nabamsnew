@@ -21,8 +21,8 @@
     <div id="profile" class="rounded-lg bg-white p-6 shadow-sm ring-1 ring-[#0A2A6B]/10">
         <div class="flex items-center gap-4">
             <div class="grid h-16 w-16 shrink-0 place-items-center overflow-hidden rounded-lg bg-[#0A2A6B] text-lg font-black text-white">
-                @if ($user->image)
-                    <img src="{{ asset($user->image) }}" alt="{{ $displayName }}" class="h-full w-full object-cover">
+                @if ($user->image_url)
+                    <img src="{{ $user->image_url }}" alt="{{ $displayName }}" class="h-full w-full object-cover">
                 @else
                     {{ $initials ?: 'NM' }}
                 @endif
