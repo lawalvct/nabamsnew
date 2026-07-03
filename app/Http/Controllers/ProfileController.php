@@ -49,7 +49,7 @@ class ProfileController extends Controller
             'email' => ['required', 'string', 'email', 'max:60', Rule::unique('users', 'email')->ignore($user->id)],
             'phone' => ['required', 'string', 'max:30'],
             'whatsapp_number' => ['nullable', 'string', 'max:30'],
-            'matno' => ['required', 'string', 'max:30', 'regex:/^(HBAF|NBAF)\/(2[1-5])\/[0-9]{4}$/i', Rule::unique('users', 'matno')->ignore($user->id)],
+            'matno' => ['required', 'string', 'max:30', Rule::unique('users', 'matno')->ignore($user->id)],
             'academic_level' => ['required', Rule::in(['ND1', 'ND2', 'ND3', 'HND1', 'HND2', 'HND3', 'GRADUATE'])],
             'member_type' => ['required', Rule::in(['Regular', 'Part-time', 'Alumni'])],
             'home_address' => ['nullable', 'string', 'max:1000'],

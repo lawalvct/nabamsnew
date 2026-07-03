@@ -93,7 +93,7 @@
 
                     <label class="grid gap-2 text-sm font-bold text-[#0A2A6B]">
                         Matric Number
-                        <input name="matno" value="{{ old('matno', $user->matno) }}" required pattern="(HBAF|NBAF)/(2[1-5])/[0-9]{4}" class="rounded-lg border border-[#0A2A6B]/15 px-4 py-3 font-normal uppercase text-[#2E2E2E] outline-none transition focus:border-[#F5B400] focus:ring-4 focus:ring-[#F5B400]/20">
+                        <input name="matno" value="{{ old('matno', $user->matno) }}" required class="rounded-lg border border-[#0A2A6B]/15 px-4 py-3 font-normal uppercase text-[#2E2E2E] outline-none transition focus:border-[#F5B400] focus:ring-4 focus:ring-[#F5B400]/20">
                         @error('matno') <span class="text-xs font-black text-[#F5B400]">{{ $message }}</span> @enderror
                     </label>
 
