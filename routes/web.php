@@ -11,6 +11,7 @@ use App\Http\Controllers\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\Auth\RegisteredUserController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ElectionController;
+use App\Http\Controllers\MemberDirectoryController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 
@@ -25,6 +26,12 @@ Route::get('/about', function () {
 Route::get('/excos', function () {
     return view('excos');
 })->name('excos');
+
+Route::get('/our-members', [MemberDirectoryController::class, 'index'])->name('members.index');
+Route::get('/our-members/photo/{directory}/{filename}', [MemberDirectoryController::class, 'photo'])
+    ->whereIn('directory', ['profile_photos', 'passport_photographs'])
+    ->where('filename', '[A-Za-z0-9._-]+')
+    ->name('members.photo');
 
 Route::middleware('guest')->group(function () {
     Route::get('/register', [RegisteredUserController::class, 'create'])->name('register');

@@ -4,7 +4,7 @@
             <div class="flex items-start justify-between gap-4">
                 <div>
                     <p class="text-sm font-black uppercase tracking-wide text-[#F5B400]">Welcome to NABAMS</p>
-                    <h2 id="welcome-modal-title" class="mt-2 text-2xl font-black">Hello, visitor</h2>
+                    <h2 id="welcome-modal-title" class="mt-2 text-2xl font-black">Welcome to Our Association</h2>
                 </div>
                 <button type="button" data-close-welcome-modal class="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-lg border border-white/20 text-white transition hover:bg-white/10" aria-label="Close welcome message">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
@@ -19,8 +19,9 @@
                 Glad to have you here. Register as a NABAMS member to access your dashboard, membership profile, resources, and association updates.
             </p>
 
-            <div class="mt-6 grid gap-3 sm:grid-cols-2">
+            <div class="mt-6 grid gap-3 sm:grid-cols-3">
                 <a href="{{ route('register') }}" class="inline-flex items-center justify-center rounded-lg bg-[#1FA774] px-5 py-3 text-sm font-black text-white transition hover:bg-[#198b61]">Register Now</a>
+                <a href="/our-members" class="inline-flex items-center justify-center rounded-lg bg-[#0A2A6B] px-5 py-3 text-sm font-black text-white transition hover:bg-[#0d3a8b]">Our Members</a>
                 <button type="button" data-close-welcome-modal class="inline-flex items-center justify-center rounded-lg border border-[#0A2A6B]/20 px-5 py-3 text-sm font-black text-[#0A2A6B] transition hover:border-[#1FA774] hover:text-[#1FA774]">Maybe Later</button>
             </div>
         </div>

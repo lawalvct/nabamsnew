@@ -99,4 +99,32 @@ class User extends Authenticatable
 
         return Storage::disk('public')->url($this->image);
     }
+
+    public function getPublicImageUrlAttribute(): ?string
+    {
+        if (! $this->image) {
+            return null;
+        }
+
+        if (str_starts_with($this->image, 'http://') || str_starts_with($this->image, 'https://')) {
+            return $this->image;
+        }
+
+        if (str_starts_with($this->image, 'storage/')) {
+            return asset($this->image);
+        }
+
+        if (str_starts_with($this->image, 'profile_photos/') || str_starts_with($this->image, 'passport_photographs/')) {
+            return route('members.photo', [
+                'directory' => dirname($this->image),
+                'filename' => basename($this->image),
+            ]);
+        }
+
+        if (str_starts_with($this->image, 'uploads/')) {
+            return asset($this->image);
+        }
+
+        return Storage::disk('public')->url($this->image);
+    }
 }
