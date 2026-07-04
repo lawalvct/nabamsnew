@@ -32,7 +32,7 @@ class RegisteredUserController extends Controller
             'dob' => ['required', 'date', 'before:today'],
             'phone' => ['required', 'string', 'max:30'],
             'email' => ['required', 'string', 'email', 'max:60', 'unique:users,email'],
-            'matno' => ['required', 'string', 'max:30', 'unique:users,matno', 'regex:/^(HBAF|NBAF)\/(2[1-5])\/[0-9]{4}$/i'],
+            'matno' => ['required', 'string', 'max:30', 'unique:users,matno', 'regex:/^(HBAF|NBAF)\/(2[1-5][A-Z]?)\/[0-9]{4}$/i'],
             'department' => ['required', 'string', 'in:Business Administration & Management'],
             'academic_level' => ['required', 'string', 'in:ND1,ND2,ND3,HND1,HND2,HND3,GRADUATE'],
             'member_type' => ['required', 'string', 'in:Regular,Part-time,Alumni'],
@@ -43,7 +43,7 @@ class RegisteredUserController extends Controller
             'home_address' => ['nullable', 'string', 'max:1000'],
             'website' => ['nullable', 'size:0'],
         ], [
-            'matno.regex'           => 'Matric number must be in the format HBAF/YY/0000 or NBAF/YY/0000 (year 21–25).',
+            'matno.regex'           => 'Matric number must be in the format HBAF/YY/0000 or NBAF/YY/0000, with an optional year letter (year 21-25).',
             'security_answer.regex' => 'The security answer must be a number with at most 2 digits.',
         ]);
 

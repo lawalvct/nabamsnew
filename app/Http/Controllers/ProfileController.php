@@ -49,7 +49,7 @@ class ProfileController extends Controller
             'email' => ['required', 'string', 'email', 'max:60', Rule::unique('users', 'email')->ignore($user->id)],
             'phone' => ['required', 'string', 'max:30'],
             'whatsapp_number' => ['nullable', 'string', 'max:30'],
-            'matno' => ['required', 'string', 'max:30', Rule::unique('users', 'matno')->ignore($user->id)],
+            'matno' => ['required', 'string', 'max:30', 'regex:/^(HBAF|NBAF)\/(2[1-5][A-Z]?)\/[0-9]{4}$/i', Rule::unique('users', 'matno')->ignore($user->id)],
             'academic_level' => ['required', Rule::in(['ND1', 'ND2', 'ND3', 'HND1', 'HND2', 'HND3', 'GRADUATE'])],
             'member_type' => ['required', Rule::in(['Regular', 'Part-time', 'Alumni'])],
             'home_address' => ['nullable', 'string', 'max:1000'],
@@ -59,7 +59,7 @@ class ProfileController extends Controller
             'linkedin_link' => ['nullable', 'url', 'max:100'],
             'profile_photo' => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp', 'max:2048', 'dimensions:max_width=2400,max_height=2400'],
         ], [
-            'matno.regex' => 'Matric number must be in the format HBAF/YY/0000 or NBAF/YY/0000 (year 21-25).',
+            'matno.regex' => 'Matric number must be in the format HBAF/YY/0000 or NBAF/YY/0000, with an optional year letter (year 21-25).',
             'profile_photo.dimensions' => 'Profile photo must not be larger than 2400px by 2400px.',
         ]);
 

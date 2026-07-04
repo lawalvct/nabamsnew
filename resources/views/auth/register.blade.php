@@ -147,8 +147,8 @@
                         <div class="mt-6 grid gap-5 md:grid-cols-2">
                             <label class="grid gap-2 text-sm font-bold text-[#0A2A6B]">
                                 Matric Number
-                                <input id="matno" name="matno" value="{{ old('matno') }}" type="text" required pattern="(HBAF|NBAF)/(2[1-5])/[0-9]{4}" class="rounded-lg border border-[#0A2A6B]/15 px-4 py-3 font-normal uppercase text-[#2E2E2E] outline-none transition placeholder:text-[#2E2E2E]/45 focus:border-[#F5B400] focus:ring-4 focus:ring-[#F5B400]/20" placeholder="e.g. HBAF/24/0008">
-                                <span id="matno_error" class="hidden text-xs font-black text-[#F5B400]">Format must be HBAF/YY/0000 or NBAF/YY/0000 (year 21–25).</span>
+                                <input id="matno" name="matno" value="{{ old('matno') }}" type="text" required pattern="(HBAF|NBAF)/(2[1-5][A-Za-z]?)/[0-9]{4}" class="rounded-lg border border-[#0A2A6B]/15 px-4 py-3 font-normal uppercase text-[#2E2E2E] outline-none transition placeholder:text-[#2E2E2E]/45 focus:border-[#F5B400] focus:ring-4 focus:ring-[#F5B400]/20" placeholder="e.g. HBAF/24E/0008">
+                                <span id="matno_error" class="hidden text-xs font-black text-[#F5B400]">Format must be HBAF/YY/0000 or NBAF/YY/0000, with an optional year letter.</span>
                                 @error('matno') <span class="text-xs font-black text-[#F5B400]">{{ $message }}</span> @enderror
                             </label>
 
@@ -308,7 +308,7 @@
                 const securityError = document.getElementById('security_answer_error');
                 const matnoInput = document.getElementById('matno');
                 const matnoError = document.getElementById('matno_error');
-                const matnoPattern = /^(HBAF|NBAF)\/(2[1-5])\/[0-9]{4}$/i;
+                const matnoPattern = /^(HBAF|NBAF)\/(2[1-5][A-Z]?)\/[0-9]{4}$/i;
 
                 matnoInput?.addEventListener('input', () => {
                     matnoError.classList.add('hidden');
