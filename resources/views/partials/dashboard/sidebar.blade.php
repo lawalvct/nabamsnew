@@ -1,4 +1,4 @@
-<aside class="fixed inset-y-0 left-0 z-40 hidden w-[280px] bg-[#0A2A6B] text-white lg:flex lg:flex-col">
+<aside id="dashboard-sidebar" class="fixed inset-y-0 left-0 z-40 hidden w-[280px] bg-[#0A2A6B] text-white lg:flex lg:flex-col">
     <style>
         .sidebar-scroll::-webkit-scrollbar {
             width: 6px;

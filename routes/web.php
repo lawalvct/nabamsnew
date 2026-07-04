@@ -4,6 +4,7 @@ use App\Http\Controllers\Admin\AcademicSessionController;
 use App\Http\Controllers\Admin\AdministratorController;
 use App\Http\Controllers\Admin\ElectionAspirantController;
 use App\Http\Controllers\Admin\ElectionPositionController;
+use App\Http\Controllers\Admin\ElectionVoteAdjustmentController;
 use App\Http\Controllers\Admin\ElectionVoteController;
 use App\Http\Controllers\Admin\MemberController;
 use App\Http\Controllers\Admin\SettingController;
@@ -64,6 +65,12 @@ Route::middleware('auth')->group(function () {
 
         Route::prefix('election')->name('election.')->group(function () {
             Route::get('/votes', [ElectionVoteController::class, 'index'])->name('votes.index');
+            Route::get('/votes/live', [ElectionVoteController::class, 'live'])->name('votes.live');
+            Route::get('/votes/pdf', [ElectionVoteController::class, 'downloadPdf'])->name('votes.pdf');
+            Route::get('/vote-adjustments', [ElectionVoteAdjustmentController::class, 'create'])->name('vote-adjustments.create');
+            Route::post('/vote-adjustments', [ElectionVoteAdjustmentController::class, 'store'])
+                ->middleware('throttle:10,1')
+                ->name('vote-adjustments.store');
             Route::resource('positions', ElectionPositionController::class)
                 ->parameters(['positions' => 'position'])
                 ->except('show');
