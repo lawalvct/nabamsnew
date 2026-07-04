@@ -49,7 +49,7 @@
 
                     <div class="rounded-lg border border-white/15 bg-white/10 p-5 shadow-2xl backdrop-blur">
                         <div class="grid grid-cols-3 gap-3">
-                            @foreach ($members->take(6) as $member)
+                            @foreach ($members->getCollection()->take(6) as $member)
                                 @php
                                     $previewGradients = [
                                         'from-[#F5B400] via-white to-[#1FA774]',
@@ -62,7 +62,6 @@
                                 </div>
                             @endforeach
                         </div>
-                        <p class="mt-4 text-center text-sm font-bold text-[#F2F2F2]">{{ $members->count() }} featured members on this visit</p>
                     </div>
                 </div>
             </section>
@@ -80,7 +79,7 @@
                         </div>
                     </div>
 
-                    @if ($members->isEmpty())
+                    @if ($members->count() === 0)
                         <div class="mt-8 rounded-lg bg-white p-8 text-center shadow-sm ring-1 ring-[#0A2A6B]/10">
                             <p class="text-sm font-black uppercase tracking-wide text-[#F5B400]">No portraits yet</p>
                             <h3 class="mt-3 text-2xl font-black text-[#0A2A6B]">The member wall is waiting for profile photos.</h3>
@@ -88,35 +87,18 @@
                         </div>
                     @else
                         <div id="member-wall" class="mt-8 grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6">
-                            @php
-                                $gradients = [
-                                    'from-[#0A2A6B] via-[#1FA774] to-[#F5B400]',
-                                    'from-[#F5B400] via-[#1FA774] to-[#0A2A6B]',
-                                    'from-[#1FA774] via-[#F5B400] to-[#0A2A6B]',
-                                    'from-[#0A2A6B] via-[#F5B400] to-[#1FA774]',
-                                    'from-[#1FA774] via-[#0A2A6B] to-[#F5B400]',
-                                    'from-[#F5B400] via-[#0A2A6B] to-[#1FA774]',
-                                ];
-                            @endphp
-
                             @foreach ($members as $member)
-                                @php
-                                    $displayName = $member->nickname ?: $member->name;
-                                    $levelText = trim(($member->academic_level ?? '').' '.($member->member_type ?? ''));
-                                @endphp
-
-                                <article class="member-card group rounded-lg bg-gradient-to-br {{ $gradients[$loop->index % count($gradients)] }} p-[3px] shadow-sm transition duration-300 hover:-translate-y-1 hover:shadow-xl" data-member-card>
-                                    <button type="button" class="relative block w-full overflow-hidden rounded-md bg-[#0A2A6B] text-left" aria-label="Reveal member">
-                                        <img src="{{ $member->public_image_url }}" alt="NABAMS member portrait" loading="lazy" class="aspect-square w-full object-cover transition duration-500 group-hover:scale-105">
-                                        <span class="absolute inset-0 bg-gradient-to-t from-[#0A2A6B]/95 via-[#0A2A6B]/20 to-transparent opacity-0 transition duration-300 group-hover:opacity-100" data-member-overlay></span>
-                                        <span class="absolute inset-x-0 bottom-0 translate-y-full p-3 text-white transition duration-300 group-hover:translate-y-0" data-member-details>
-                                            <span class="block truncate text-sm font-black">{{ $displayName ?: 'NABAMS Member' }}</span>
-                                            <span class="mt-1 block truncate text-xs font-bold text-[#F5B400]">{{ $levelText ?: 'Business Administration & Management' }}</span>
-                                        </span>
-                                    </button>
-                                </article>
+                                @include('partials.site.member-card', ['member' => $member, 'gradientIndex' => $loop->index])
                             @endforeach
                         </div>
+
+                        @if ($members->hasMorePages())
+                            <div class="mt-8 text-center">
+                                <button type="button" id="load-more-members" data-next-page-url="{{ $members->nextPageUrl() }}" class="rounded-lg bg-[#1FA774] px-6 py-3 text-sm font-black text-white shadow-sm transition hover:bg-[#198b61]">
+                                    Load More Members
+                                </button>
+                            </div>
+                        @endif
                     @endif
                 </div>
             </section>
@@ -144,6 +126,7 @@
                 const wall = document.getElementById('member-wall');
                 const shuffleButton = document.getElementById('shuffle-members');
                 const hideNamesButton = document.getElementById('hide-member-names');
+                const loadMoreButton = document.getElementById('load-more-members');
 
                 const closeAllCards = () => {
                     document.querySelectorAll('[data-member-card]').forEach((card) => {
@@ -155,21 +138,25 @@
                     });
                 };
 
-                document.querySelectorAll('[data-member-card] button').forEach((button) => {
-                    button.addEventListener('click', () => {
-                        const card = button.closest('[data-member-card]');
-                        const isOpen = card.classList.contains('is-revealed');
+                wall?.addEventListener('click', (event) => {
+                    const button = event.target.closest('[data-member-card] button');
 
-                        closeAllCards();
+                    if (! button || ! wall.contains(button)) {
+                        return;
+                    }
 
-                        if (! isOpen) {
-                            card.classList.add('is-revealed');
-                            button.querySelector('[data-member-overlay]')?.classList.remove('opacity-0');
-                            button.querySelector('[data-member-overlay]')?.classList.add('opacity-100');
-                            button.querySelector('[data-member-details]')?.classList.remove('translate-y-full');
-                            button.querySelector('[data-member-details]')?.classList.add('translate-y-0');
-                        }
-                    });
+                    const card = button.closest('[data-member-card]');
+                    const isOpen = card.classList.contains('is-revealed');
+
+                    closeAllCards();
+
+                    if (! isOpen) {
+                        card.classList.add('is-revealed');
+                        button.querySelector('[data-member-overlay]')?.classList.remove('opacity-0');
+                        button.querySelector('[data-member-overlay]')?.classList.add('opacity-100');
+                        button.querySelector('[data-member-details]')?.classList.remove('translate-y-full');
+                        button.querySelector('[data-member-details]')?.classList.add('translate-y-0');
+                    }
                 });
 
                 hideNamesButton?.addEventListener('click', closeAllCards);
@@ -184,6 +171,44 @@
                     [...wall.children]
                         .sort(() => Math.random() - 0.5)
                         .forEach((card) => wall.appendChild(card));
+                });
+
+                loadMoreButton?.addEventListener('click', async () => {
+                    const nextPageUrl = loadMoreButton.dataset.nextPageUrl;
+
+                    if (! wall || ! nextPageUrl) {
+                        return;
+                    }
+
+                    loadMoreButton.disabled = true;
+                    loadMoreButton.textContent = 'Loading...';
+
+                    try {
+                        const response = await fetch(nextPageUrl, {
+                            headers: {
+                                'Accept': 'application/json',
+                                'X-Requested-With': 'XMLHttpRequest',
+                            },
+                        });
+                        const payload = await response.json();
+
+                        if (! response.ok) {
+                            throw new Error('Unable to load more members.');
+                        }
+
+                        wall.insertAdjacentHTML('beforeend', payload.html || '');
+
+                        if (payload.next_page_url) {
+                            loadMoreButton.dataset.nextPageUrl = payload.next_page_url;
+                            loadMoreButton.disabled = false;
+                            loadMoreButton.textContent = 'Load More Members';
+                        } else {
+                            loadMoreButton.remove();
+                        }
+                    } catch (error) {
+                        loadMoreButton.disabled = false;
+                        loadMoreButton.textContent = 'Try Again';
+                    }
                 });
             });
         </script>

@@ -3,25 +3,49 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\View\View;
 
 class MemberDirectoryController extends Controller
 {
-    public function index(): View
+    public function index(Request $request): View|JsonResponse
     {
+        $seed = (int) $request->query('seed');
+
+        if ($seed < 1) {
+            $seed = random_int(1, 999999);
+        }
+
         $members = User::query()
             ->where('role', 'Member')
             ->where('is_active', 'Yes')
             ->where('is_ban', 'No')
             ->whereNotNull('image')
             ->where('image', '!=', '')
-            ->inRandomOrder()
-            ->limit(96)
-            ->get();
+            ->inRandomOrder($seed)
+            ->paginate(96)
+            ->appends(['seed' => $seed]);
+
+        if ($request->expectsJson()) {
+            $offset = ($members->currentPage() - 1) * $members->perPage();
+            $html = $members->getCollection()
+                ->map(fn (User $member, int $index) => view('partials.site.member-card', [
+                    'member' => $member,
+                    'gradientIndex' => $offset + $index,
+                ])->render())
+                ->implode('');
+
+            return response()->json([
+                'html' => $html,
+                'next_page_url' => $members->nextPageUrl(),
+            ]);
+        }
 
         return view('members', [
             'members' => $members,
+            'seed' => $seed,
         ]);
     }
 
