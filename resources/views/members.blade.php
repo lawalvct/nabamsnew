@@ -26,6 +26,7 @@
             }
 
             .member-card.is-revealed [data-member-details] {
+                translate: 0 0;
                 transform: translateY(0);
             }
         </style>
@@ -147,6 +148,10 @@
                 const closeAllCards = () => {
                     document.querySelectorAll('[data-member-card]').forEach((card) => {
                         card.classList.remove('is-revealed');
+                        card.querySelector('[data-member-overlay]')?.classList.remove('opacity-100');
+                        card.querySelector('[data-member-overlay]')?.classList.add('opacity-0');
+                        card.querySelector('[data-member-details]')?.classList.remove('translate-y-0');
+                        card.querySelector('[data-member-details]')?.classList.add('translate-y-full');
                     });
                 };
 
@@ -159,6 +164,10 @@
 
                         if (! isOpen) {
                             card.classList.add('is-revealed');
+                            button.querySelector('[data-member-overlay]')?.classList.remove('opacity-0');
+                            button.querySelector('[data-member-overlay]')?.classList.add('opacity-100');
+                            button.querySelector('[data-member-details]')?.classList.remove('translate-y-full');
+                            button.querySelector('[data-member-details]')?.classList.add('translate-y-0');
                         }
                     });
                 });
