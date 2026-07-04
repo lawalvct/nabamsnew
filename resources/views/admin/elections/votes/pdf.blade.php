@@ -108,7 +108,7 @@
             &nbsp; | &nbsp;
             <strong>Generated at:</strong> {{ $generatedAt->format('M d, Y h:i A') }}
             &nbsp; | &nbsp;
-            <strong>Report type:</strong>Vote Summary 
+            <strong>Report type:</strong>Vote Summary
         </div>
 
         <div class="content">
@@ -172,41 +172,8 @@
 
             <div class="page-break"></div>
 
-            <h2>Vote Adjustment Audit Log</h2>
-            <p class="muted">Adjustments are recorded separately from member ballot records.</p>
 
-            <table>
-                <thead>
-                    <tr>
-                        <th>Time</th>
-                        <th>Admin</th>
-                        <th>Position</th>
-                        <th>Aspirant</th>
-                        <th>Change</th>
-                        <th>Before</th>
-                        <th>After</th>
-                        <th>Reason</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @forelse ($allAdjustments as $adjustment)
-                        <tr>
-                            <td>{{ $adjustment->created_at?->format('M d, Y h:i A') }}</td>
-                            <td>{{ $adjustment->admin?->name ?? 'Deleted admin' }}</td>
-                            <td>{{ $adjustment->position?->name }}</td>
-                            <td>{{ $adjustment->aspirant?->name }}</td>
-                            <td>{{ $adjustment->adjustment >= 0 ? '+' : '' }}{{ $adjustment->adjustment }}</td>
-                            <td>{{ $adjustment->before_total }}</td>
-                            <td>{{ $adjustment->after_total }}</td>
-                            <td>{{ $adjustment->reason }}</td>
-                        </tr>
-                    @empty
-                        <tr>
-                            <td colspan="8" class="muted">No vote adjustments recorded for this session.</td>
-                        </tr>
-                    @endforelse
-                </tbody>
-            </table>
+
         </div>
     </body>
 </html>
