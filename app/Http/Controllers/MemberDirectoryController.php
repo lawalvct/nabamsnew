@@ -13,10 +13,20 @@ class MemberDirectoryController extends Controller
     public function index(Request $request): View|JsonResponse
     {
         $seed = (int) $request->query('seed');
+        $previewSeed = (int) $request->query('preview_seed');
 
         if ($seed < 1) {
             $seed = random_int(1, 999999);
         }
+
+        if ($previewSeed < 1 || $previewSeed === $seed) {
+            $previewSeed = random_int(1, 999999);
+        }
+
+        $previewMembers = $this->memberImageQuery()
+            ->inRandomOrder($previewSeed)
+            ->limit(6)
+            ->get();
 
         $members = User::query()
             ->where('role', 'Member')
@@ -24,9 +34,13 @@ class MemberDirectoryController extends Controller
             ->where('is_ban', 'No')
             ->whereNotNull('image')
             ->where('image', '!=', '')
+            ->whereNotIn('id', $previewMembers->pluck('id'))
             ->inRandomOrder($seed)
             ->paginate(96)
-            ->appends(['seed' => $seed]);
+            ->appends([
+                'seed' => $seed,
+                'preview_seed' => $previewSeed,
+            ]);
 
         if ($request->expectsJson()) {
             $offset = ($members->currentPage() - 1) * $members->perPage();
@@ -45,7 +59,9 @@ class MemberDirectoryController extends Controller
 
         return view('members', [
             'members' => $members,
+            'previewMembers' => $previewMembers,
             'seed' => $seed,
+            'previewSeed' => $previewSeed,
         ]);
     }
 
@@ -70,5 +86,15 @@ class MemberDirectoryController extends Controller
         return response()->file(Storage::disk('public')->path($path), [
             'Cache-Control' => 'public, max-age=604800',
         ]);
+    }
+
+    private function memberImageQuery()
+    {
+        return User::query()
+            ->where('role', 'Member')
+            ->where('is_active', 'Yes')
+            ->where('is_ban', 'No')
+            ->whereNotNull('image')
+            ->where('image', '!=', '');
     }
 }

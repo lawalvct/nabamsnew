@@ -49,7 +49,7 @@
 
                     <div class="rounded-lg border border-white/15 bg-white/10 p-5 shadow-2xl backdrop-blur">
                         <div class="grid grid-cols-3 gap-3">
-                            @foreach ($members->getCollection()->take(6) as $member)
+                            @foreach ($previewMembers as $member)
                                 @php
                                     $previewGradients = [
                                         'from-[#F5B400] via-white to-[#1FA774]',
