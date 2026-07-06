@@ -83,7 +83,7 @@ Route::middleware('auth')->group(function () {
         Route::put('/settings', [SettingController::class, 'update'])->middleware('throttle:10,1')->name('settings.update');
         Route::resource('members', MemberController::class)
             ->parameters(['members' => 'member'])
-            ->only(['index', 'show', 'edit', 'update']);
+            ->only(['index', 'create', 'store', 'show', 'edit', 'update']);
         Route::resource('admins', AdministratorController::class)
             ->parameters(['admins' => 'admin'])
             ->except('show');

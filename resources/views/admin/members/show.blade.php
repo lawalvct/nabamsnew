@@ -44,7 +44,7 @@
         <h2 class="text-xl font-black text-[#0A2A6B]">Member Information</h2>
         <dl class="mt-5 grid gap-5 md:grid-cols-2">
             @foreach ([
-                'Matric Number' => $member->matno,
+                'Matric Number' => $member->matno ?: 'Not provided',
                 'Phone' => $member->phone,
                 'WhatsApp' => $member->whatsapp_number ?? 'Not provided',
                 'Level' => $member->academic_level ?? 'Not set',

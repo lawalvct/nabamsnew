@@ -11,6 +11,8 @@ use Illuminate\View\View;
 
 class MemberController extends Controller
 {
+    private const DEFAULT_MEMBER_PASSWORD = '12345678';
+
     public function index(Request $request): View
     {
         $this->authorizeAdmin($request);
@@ -50,6 +52,53 @@ class MemberController extends Controller
         ]);
     }
 
+    public function create(Request $request): View
+    {
+        $this->authorizeAdmin($request);
+
+        return view('admin.members.create');
+    }
+
+    public function store(Request $request): RedirectResponse
+    {
+        $this->authorizeAdmin($request);
+
+        $validated = $request->validate([
+            'full_name' => ['required', 'string', 'max:120'],
+            'gender' => ['required', Rule::in(['Male', 'Female', 'Other'])],
+            'email' => ['required', 'string', 'email', 'max:60', Rule::unique('users', 'email')],
+            'phone' => ['required', 'string', 'max:30'],
+            'matno' => ['nullable', 'string', 'max:30', 'regex:/^(HBAF|NBAF)\/(2[1-5][A-Z]?)\/[0-9]{4}$/i', Rule::unique('users', 'matno')],
+        ], [
+            'matno.regex' => 'Matric number must be in the format HBAF/YY/0000 or NBAF/YY/0000, with an optional year letter (year 21-25).',
+        ]);
+
+        [$firstname, $lastname] = $this->splitFullName($validated['full_name']);
+
+        $member = User::create([
+            'firstname' => $firstname,
+            'lastname' => $lastname,
+            'gender' => $validated['gender'],
+            'email' => strtolower($validated['email']),
+            'phone' => $validated['phone'],
+            'matno' => filled($validated['matno'] ?? null) ? strtoupper($validated['matno']) : null,
+            'password' => self::DEFAULT_MEMBER_PASSWORD,
+            'department' => 'Business Administration & Management',
+            'academic_level' => 'ND1',
+            'level_id' => 1,
+            'member_type' => 'Regular',
+            'is_active' => 'Yes',
+            'is_ban' => 'No',
+            'fee_paid' => 'No',
+            'role' => 'Member',
+            'user_role_id' => 2,
+        ]);
+
+        return redirect()
+            ->route('admin.members.show', $member)
+            ->with('success', 'Member created successfully. Advise the member to change their password after login. The default password is '.self::DEFAULT_MEMBER_PASSWORD.'.');
+    }
+
     public function show(Request $request, User $member): View
     {
         $this->authorizeAdmin($request);
@@ -82,7 +131,7 @@ class MemberController extends Controller
             'gender' => ['nullable', Rule::in(['Male', 'Female', 'Other'])],
             'dob' => ['nullable', 'date', 'before:today'],
             'email' => ['required', 'string', 'email', 'max:60', Rule::unique('users', 'email')->ignore($member->id)],
-            'matno' => ['required', 'string', 'max:30', Rule::unique('users', 'matno')->ignore($member->id)],
+            'matno' => ['nullable', 'string', 'max:30', 'regex:/^(HBAF|NBAF)\/(2[1-5][A-Z]?)\/[0-9]{4}$/i', Rule::unique('users', 'matno')->ignore($member->id)],
             'phone' => ['required', 'string', 'max:30'],
             'whatsapp_number' => ['nullable', 'string', 'max:30'],
             'academic_level' => ['required', Rule::in(['ND1', 'ND2', 'ND3', 'HND1', 'HND2', 'HND3', 'GRADUATE'])],
@@ -92,10 +141,12 @@ class MemberController extends Controller
             'fee_paid' => ['required', Rule::in(['Yes', 'No'])],
             'home_address' => ['nullable', 'string', 'max:1000'],
             'bio' => ['nullable', 'string', 'max:1500'],
+        ], [
+            'matno.regex' => 'Matric number must be in the format HBAF/YY/0000 or NBAF/YY/0000, with an optional year letter (year 21-25).',
         ]);
 
         $validated['email'] = strtolower($validated['email']);
-        $validated['matno'] = strtoupper($validated['matno']);
+        $validated['matno'] = filled($validated['matno'] ?? null) ? strtoupper($validated['matno']) : null;
         $validated['department'] = 'Business Administration & Management';
         $validated['level_id'] = $this->levelIdFromAcademicLevel($validated['academic_level']);
         $validated['role'] = 'Member';
@@ -116,6 +167,16 @@ class MemberController extends Controller
     private function authorizeMemberRecord(User $member): void
     {
         abort_unless($member->role === 'Member', 404);
+    }
+
+    /**
+     * @return array{0: string, 1: string|null}
+     */
+    private function splitFullName(string $fullName): array
+    {
+        $parts = preg_split('/\s+/', trim($fullName), 2);
+
+        return [$parts[0], $parts[1] ?? null];
     }
 
     private function levelIdFromAcademicLevel(string $academicLevel): int

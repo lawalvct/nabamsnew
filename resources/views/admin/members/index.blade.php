@@ -10,7 +10,7 @@
                     Search members, review profiles, update account status, fee status, and academic details.
                 </p>
             </div>
-            <a href="{{ route('admin.members.index') }}" class="inline-flex justify-center rounded-lg bg-[#F5B400] px-5 py-3 text-sm font-black text-[#0A2A6B] transition hover:bg-[#ffd15c]">View All Members</a>
+            <a href="{{ route('admin.members.create') }}" class="inline-flex justify-center rounded-lg bg-[#F5B400] px-5 py-3 text-sm font-black text-[#0A2A6B] transition hover:bg-[#ffd15c]">Add Member</a>
         </div>
     </section>
 
@@ -84,7 +84,7 @@
                                     </div>
                                 </div>
                             </td>
-                            <td class="px-5 py-4 text-sm font-semibold text-[#2E2E2E]/75">{{ $member->matno }}</td>
+                            <td class="px-5 py-4 text-sm font-semibold text-[#2E2E2E]/75">{{ $member->matno ?: 'Not provided' }}</td>
                             <td class="px-5 py-4"><span class="rounded-full px-3 py-1 text-xs font-black {{ $member->is_active === 'Yes' ? 'bg-[#1FA774]/10 text-[#1FA774]' : 'bg-[#F5B400]/20 text-[#0A2A6B]' }}">{{ $member->is_active }}</span></td>
                             <td class="px-5 py-4"><span class="rounded-full px-3 py-1 text-xs font-black {{ $member->fee_paid === 'Yes' ? 'bg-[#1FA774]/10 text-[#1FA774]' : 'bg-[#F2F2F2] text-[#2E2E2E]/70' }}">{{ $member->fee_paid }}</span></td>
                             <td class="px-5 py-4">
@@ -117,7 +117,7 @@
                         <div class="min-w-0">
                             <h3 class="truncate text-lg font-black text-[#0A2A6B]">{{ $member->name ?: $member->firstname }}</h3>
                             <p class="truncate text-sm font-semibold text-[#2E2E2E]/65">{{ $member->email }}</p>
-                            <p class="mt-1 text-xs font-black text-[#1FA774]">{{ $member->matno }} · Fee {{ $member->fee_paid }}</p>
+                            <p class="mt-1 text-xs font-black text-[#1FA774]">{{ $member->matno ?: 'No matric number' }} · Fee {{ $member->fee_paid }}</p>
                         </div>
                     </div>
                     <div class="mt-4 flex gap-2">
