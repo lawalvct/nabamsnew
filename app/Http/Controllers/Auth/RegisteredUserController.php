@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
+use App\Models\AppSetting;
 use App\Models\User;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -15,6 +16,10 @@ class RegisteredUserController extends Controller
 {
     public function create(Request $request): View
     {
+        if (! AppSetting::registrationEnabled()) {
+            return view('auth.registration-closed');
+        }
+
         if (! $request->session()->has('registration_security_answer')) {
             $this->setSecurityQuestion($request);
         }
@@ -26,6 +31,12 @@ class RegisteredUserController extends Controller
 
     public function store(Request $request): RedirectResponse
     {
+        if (! AppSetting::registrationEnabled()) {
+            return redirect()
+                ->route('register')
+                ->with('registration_disabled', 'Member registration is currently disabled. Please contact the admin for assistance.');
+        }
+
         $validated = $request->validate([
             'full_name' => ['required', 'string', 'max:120'],
             'gender' => ['required', 'string', 'in:Male,Female,Other'],

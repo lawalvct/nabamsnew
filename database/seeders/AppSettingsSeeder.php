@@ -35,6 +35,12 @@ class AppSettingsSeeder extends Seeder
                 'setting_group' => 'general',
             ],
             [
+                'name'          => 'Member Registration',
+                'slug'          => 'registration',
+                'value'         => 'On',
+                'setting_group' => 'general',
+            ],
+            [
                 'name'          => 'Contest Time',
                 'slug'          => 'contest',
                 'value'         => 'Off',

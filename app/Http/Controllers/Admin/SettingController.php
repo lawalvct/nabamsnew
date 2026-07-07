@@ -17,6 +17,7 @@ class SettingController extends Controller
 
         return view('admin.settings.edit', [
             'electionSetting' => AppSetting::election(),
+            'registrationSetting' => AppSetting::registration(),
         ]);
     }
 
@@ -26,10 +27,16 @@ class SettingController extends Controller
 
         $validated = $request->validate([
             'election' => ['required', Rule::in(['On', 'Off'])],
+            'registration' => ['required', Rule::in(['On', 'Off'])],
         ]);
 
         AppSetting::election()->update([
             'value' => $validated['election'],
+            'active' => 'Yes',
+        ]);
+
+        AppSetting::registration()->update([
+            'value' => $validated['registration'],
             'active' => 'Yes',
         ]);
 

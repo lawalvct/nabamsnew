@@ -37,4 +37,32 @@ class AppSetting extends Model
 
         return in_array(strtolower((string) $setting->value), ['on', 'yes', '1', 'true', 'enabled'], true);
     }
+
+    public static function registration(): self
+    {
+        return self::query()->firstOrCreate(
+            ['slug' => 'registration'],
+            [
+                'name' => 'Member Registration',
+                'value' => 'On',
+                'setting_group' => 'general',
+                'active' => 'Yes',
+            ],
+        );
+    }
+
+    public static function registrationEnabled(): bool
+    {
+        $setting = self::query()->where('slug', 'registration')->first();
+
+        if (! $setting) {
+            return true;
+        }
+
+        if ($setting->active !== 'Yes') {
+            return false;
+        }
+
+        return in_array(strtolower((string) $setting->value), ['on', 'yes', '1', 'true', 'enabled'], true);
+    }
 }
