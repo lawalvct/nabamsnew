@@ -123,7 +123,7 @@ class PaymentExtrasTest extends TestCase
         $this->assertStringContainsString('text/csv', $response->headers->get('content-type'));
 
         $csv = $response->streamedContent();
-        $this->assertStringContainsString('Reference,Member', $csv);
+        $this->assertStringContainsString('Reference,Type,Member', $csv);
         $this->assertStringContainsString($reference, $csv);
         $this->assertStringContainsString('Cash', $csv);
 

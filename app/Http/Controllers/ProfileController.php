@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Support\SecureUpload;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
@@ -22,6 +23,7 @@ class ProfileController extends Controller
 
         return response()->file(Storage::disk('public')->path($path), [
             'Cache-Control' => 'private, max-age=604800',
+            'X-Content-Type-Options' => 'nosniff',
         ]);
     }
 
@@ -57,15 +59,15 @@ class ProfileController extends Controller
             'facebook_link' => ['nullable', 'url', 'max:100'],
             'x_link' => ['nullable', 'url', 'max:100'],
             'linkedin_link' => ['nullable', 'url', 'max:100'],
-            'profile_photo' => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp', 'max:2048', 'dimensions:max_width=2400,max_height=2400'],
+            'profile_photo' => ['nullable', 'file', 'extensions:jpg,jpeg,png,webp', 'mimes:jpg,jpeg,png,webp', 'max:5120'],
         ], [
             'matno.regex' => 'Matric number must be in the format HBAF/YY/0000 or NBAF/YY/0000, with an optional year letter (year 21-25).',
-            'profile_photo.dimensions' => 'Profile photo must not be larger than 2400px by 2400px.',
         ]);
 
         if ($request->hasFile('profile_photo')) {
+            $newImage = SecureUpload::storeImage($request->file('profile_photo'), 'profile_photo', 'profile_photos', 'public', 800);
             $this->deleteStoredProfilePhoto($user->image);
-            $validated['image'] = $request->file('profile_photo')->store('profile_photos', 'public');
+            $validated['image'] = $newImage;
         }
 
         unset($validated['profile_photo']);

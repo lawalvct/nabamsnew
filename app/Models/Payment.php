@@ -8,6 +8,10 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Payment extends Model
 {
+    public const TYPE_DUES = 'dues';
+
+    public const TYPE_RESOURCE = 'resource';
+
     public const STATUS_AWAITING = 'awaiting_payment';
 
     public const STATUS_PENDING = 'pending';
@@ -37,6 +41,8 @@ class Payment extends Model
 
     protected $fillable = [
         'reference',
+        'type',
+        'resource_id',
         'user_id',
         'academic_session_id',
         'semester',
@@ -105,6 +111,11 @@ class Payment extends Model
         return $this->belongsTo(AcademicSession::class);
     }
 
+    public function resource(): BelongsTo
+    {
+        return $this->belongsTo(Resource::class);
+    }
+
     public function bankAccount(): BelongsTo
     {
         return $this->belongsTo(BankAccount::class);
@@ -113,6 +124,16 @@ class Payment extends Model
     public function reviewer(): BelongsTo
     {
         return $this->belongsTo(User::class, 'reviewed_by');
+    }
+
+    public function scopeDues(Builder $query): Builder
+    {
+        return $query->where('type', self::TYPE_DUES);
+    }
+
+    public function isResourcePurchase(): bool
+    {
+        return $this->type === self::TYPE_RESOURCE;
     }
 
     public function scopeApproved(Builder $query): Builder
@@ -132,6 +153,10 @@ class Payment extends Model
 
     public function periodLabel(): string
     {
+        if ($this->isResourcePurchase()) {
+            return 'Resource: '.($this->resource?->title ?? $this->items[0]['name'] ?? 'Deleted resource');
+        }
+
         $session = $this->academicSession?->name ?? 'Session';
 
         return $this->semester ? "{$session}, {$this->semester} Semester" : "{$session} (Full Session)";

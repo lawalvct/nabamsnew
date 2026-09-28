@@ -43,7 +43,7 @@
         </div>
     </section>
 
-    <form method="GET" action="{{ route('admin.payments.index') }}" class="mt-6 grid gap-4 rounded-lg bg-white p-5 shadow-sm ring-1 ring-[#0A2A6B]/10 sm:grid-cols-2 lg:grid-cols-6">
+    <form method="GET" action="{{ route('admin.payments.index') }}" class="mt-6 grid gap-4 rounded-lg bg-white p-5 shadow-sm ring-1 ring-[#0A2A6B]/10 sm:grid-cols-2 lg:grid-cols-7">
         <label class="grid gap-2 text-sm font-bold text-[#0A2A6B] lg:col-span-2">
             Search
             <input name="q" value="{{ $filters['q'] ?? '' }}" placeholder="Reference, name, matric no, email" class="{{ $filterClass }}">
@@ -55,6 +55,14 @@
                 @foreach ($statusLabels as $value => $label)
                     <option value="{{ $value }}" @selected(($filters['status'] ?? '') === $value)>{{ $label }}</option>
                 @endforeach
+            </select>
+        </label>
+        <label class="grid gap-2 text-sm font-bold text-[#0A2A6B]">
+            Type
+            <select name="type" class="{{ $filterClass }}">
+                <option value="">Dues &amp; resources</option>
+                <option value="dues" @selected(($filters['type'] ?? '') === 'dues')>Dues</option>
+                <option value="resource" @selected(($filters['type'] ?? '') === 'resource')>Resources</option>
             </select>
         </label>
         <label class="grid gap-2 text-sm font-bold text-[#0A2A6B]">

@@ -33,7 +33,8 @@ return [
         'local' => [
             'driver' => 'local',
             'root' => storage_path('app/private'),
-            'serve' => true,
+            // Private uploads (payment evidence, resources) are only served through authorised controllers.
+            'serve' => false,
             'throw' => false,
             'report' => false,
         ],

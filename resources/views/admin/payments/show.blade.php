@@ -67,7 +67,7 @@
                 <table class="mt-4 w-full text-sm">
                     <tbody class="divide-y divide-[#0A2A6B]/10">
                         @foreach ($payment->items ?? [] as $item)
-                            <tr><td class="py-2 text-[#2E2E2E]/75">{{ $item['name'] }}@if (! $payment->semester) ({{ $item['semester'] }})@endif</td><td class="py-2 text-right font-semibold">&#8358;{{ number_format($item['amount']) }}</td></tr>
+                            <tr><td class="py-2 text-[#2E2E2E]/75">{{ $item['name'] }}@if (! empty($item['semester']) && ! $payment->semester) ({{ $item['semester'] }})@endif</td><td class="py-2 text-right font-semibold">&#8358;{{ number_format($item['amount']) }}</td></tr>
                         @endforeach
                         <tr><td class="py-2 font-black text-[#0A2A6B]">Amount due</td><td class="py-2 text-right font-black text-[#0A2A6B]">&#8358;{{ number_format($payment->amount_due) }}</td></tr>
                         <tr>

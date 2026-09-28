@@ -75,7 +75,7 @@
                 <tbody>
                     @foreach ($payment->items ?? [] as $item)
                         <tr>
-                            <td>{{ $item['name'] }}@if (! $payment->semester) ({{ $item['semester'] }} Semester)@endif</td>
+                            <td>{{ $item['name'] }}@if (! empty($item['semester']) && ! $payment->semester) ({{ $item['semester'] }} Semester)@endif</td>
                             <td class="right">NGN {{ number_format($item['amount']) }}</td>
                         </tr>
                     @endforeach

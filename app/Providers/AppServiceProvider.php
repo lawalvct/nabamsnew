@@ -50,7 +50,7 @@ class AppServiceProvider extends ServiceProvider
                 ['label' => 'Academic Session', 'href' => route('admin.academic-sessions.index'), 'icon' => 'academic-session', 'active' => request()->routeIs('admin.academic-sessions.*')],
                 ['label' => 'Transactions', 'href' => route('admin.payments.index'), 'icon' => 'transactions', 'active' => request()->routeIs('admin.payments.*'), 'badge' => $pendingPayments],
                 ['label' => 'CMS', 'href' => '#cms', 'icon' => 'cms', 'active' => false],
-                ['label' => 'Resources', 'href' => '#resources', 'icon' => 'resources', 'active' => false],
+                ['label' => 'Resources', 'href' => route('admin.resources.index'), 'icon' => 'resources', 'active' => request()->routeIs('admin.resources.*')],
                 ['label' => 'Election', 'href' => route('admin.election.positions.index'), 'icon' => 'election', 'active' => request()->routeIs('admin.election.*')],
                 ['label' => 'Contest', 'href' => '#contest', 'icon' => 'contest', 'active' => false],
                 ['label' => 'Members', 'href' => route('admin.members.index'), 'icon' => 'members', 'active' => request()->routeIs('admin.members.*')],
@@ -66,7 +66,7 @@ class AppServiceProvider extends ServiceProvider
             $memberMenus = [
                 ['label' => 'Dashboard', 'href' => route('dashboard'), 'icon' => 'dashboard', 'active' => request()->routeIs('dashboard')],
                 ['label' => 'Transactions', 'href' => route('payments.index'), 'icon' => 'transactions', 'active' => request()->routeIs('payments.index')],
-                ['label' => 'Resources', 'href' => '#resources', 'icon' => 'resources', 'active' => false],
+                ['label' => 'Resources', 'href' => route('resources.index'), 'icon' => 'resources', 'active' => request()->routeIs('resources.*')],
                 ['label' => 'Election', 'href' => route('election.index'), 'icon' => 'election', 'active' => request()->routeIs('election.*')],
                 ['label' => 'Contest', 'href' => '#contest', 'icon' => 'contest', 'active' => false],
                 ['label' => 'My Project', 'href' => '#my-project', 'icon' => 'projects', 'active' => false],

@@ -51,7 +51,7 @@ class PaymentRequirement
 
         $items = self::priceItems($user->level_id, $session->id, $semester);
 
-        $payment = Payment::query()
+        $payment = Payment::dues()
             ->where('user_id', $user->id)
             ->where('academic_session_id', $session->id)
             ->where(fn ($query) => $semester ? $query->where('semester', $semester) : $query->whereNull('semester'))
@@ -147,6 +147,7 @@ class PaymentRequirement
     private static function hasApprovedCoverage(User $user, AcademicSession $session, ?string $semester, Collection $items): bool
     {
         $approved = Payment::approved()
+            ->dues()
             ->where('user_id', $user->id)
             ->where('academic_session_id', $session->id)
             ->get(['semester']);

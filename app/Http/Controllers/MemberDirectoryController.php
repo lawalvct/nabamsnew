@@ -94,6 +94,7 @@ class MemberDirectoryController extends Controller
 
         return response()->file(Storage::disk('public')->path($path), [
             'Cache-Control' => 'public, max-age=604800',
+            'X-Content-Type-Options' => 'nosniff',
         ]);
     }
 

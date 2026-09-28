@@ -13,6 +13,7 @@ use App\Models\PriceSetting;
 use App\Models\User;
 use App\Notifications\PaymentStatusChanged;
 use App\Support\PaymentRequirement;
+use App\Support\SecureUpload;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -30,7 +31,7 @@ class PaymentController extends Controller
         $filters = $this->validatedFilters($request);
 
         $payments = $this->filteredQuery($filters)
-            ->with(['user', 'academicSession'])
+            ->with(['user', 'academicSession', 'resource'])
             ->paginate(20)
             ->withQueryString();
 
@@ -49,23 +50,24 @@ class PaymentController extends Controller
     {
         $this->authorizeAdmin($request);
 
-        $query = $this->filteredQuery($this->validatedFilters($request))->with(['user', 'academicSession']);
+        $query = $this->filteredQuery($this->validatedFilters($request))->with(['user', 'academicSession', 'resource']);
 
         return response()->streamDownload(function () use ($query): void {
             $handle = fopen('php://output', 'w');
 
-            fputcsv($handle, ['Reference', 'Member', 'Matric No', 'Email', 'Level', 'Session', 'Semester', 'Amount Due', 'Amount Paid', 'Method', 'Paid Into', 'Payer Name', 'Date Paid', 'Submitted', 'Status', 'Reviewed By', 'Reviewed At', 'Rejection Reason', 'Admin Note']);
+            fputcsv($handle, ['Reference', 'Type', 'Member', 'Matric No', 'Email', 'Level', 'Session', 'Semester', 'Amount Due', 'Amount Paid', 'Method', 'Paid Into', 'Payer Name', 'Date Paid', 'Submitted', 'Status', 'Reviewed By', 'Reviewed At', 'Rejection Reason', 'Admin Note']);
 
             $query->chunk(500, function ($payments) use ($handle): void {
                 foreach ($payments as $payment) {
                     fputcsv($handle, [
                         $payment->reference,
+                        $payment->isResourcePurchase() ? 'Resource: '.($payment->resource?->title ?? $payment->items[0]['name'] ?? '') : 'Dues',
                         $payment->user?->name,
                         $payment->user?->matno,
                         $payment->user?->email,
                         $payment->level_name,
                         $payment->academicSession?->name,
-                        $payment->semester ?? 'Full Session',
+                        $payment->isResourcePurchase() ? '' : ($payment->semester ?? 'Full Session'),
                         $payment->amount_due,
                         $payment->amount_paid,
                         $payment->methodLabel(),
@@ -117,7 +119,7 @@ class PaymentController extends Controller
             'amount_paid' => ['required', 'integer', 'min:0', 'max:100000000'],
             'paid_at' => ['required', 'date', 'before_or_equal:today'],
             'admin_note' => ['nullable', 'string', 'max:255'],
-            'evidence' => ['nullable', 'file', 'mimes:jpg,jpeg,png,webp,pdf', 'max:5120'],
+            'evidence' => ['nullable', 'file', 'extensions:jpg,jpeg,png,webp,pdf', 'mimes:jpg,jpeg,png,webp,pdf', 'max:5120'],
         ], [
             'bank_account_id.required_if' => 'Select the account the transfer was made into.',
         ]);
@@ -131,6 +133,7 @@ class PaymentController extends Controller
         $semester = $validated['period'] === 'Full' ? null : $validated['period'];
 
         $alreadyApproved = Payment::approved()
+            ->dues()
             ->where('user_id', $member->id)
             ->where('academic_session_id', $validated['academic_session_id'])
             ->where(fn ($query) => $query->whereNull('semester')->when($semester, fn ($query) => $query->orWhere('semester', $semester)))
@@ -145,7 +148,7 @@ class PaymentController extends Controller
         $admin = $request->user();
 
         // Reuse the member's open draft/pending/rejected payment for this period so its reference is kept.
-        $payment = Payment::query()
+        $payment = Payment::dues()
             ->where('user_id', $member->id)
             ->where('academic_session_id', $validated['academic_session_id'])
             ->where(fn ($query) => $semester ? $query->where('semester', $semester) : $query->whereNull('semester'))
@@ -180,7 +183,7 @@ class PaymentController extends Controller
         ]);
 
         if ($request->hasFile('evidence')) {
-            $payment->evidence_path = $request->file('evidence')->store('payment_evidence', MemberPaymentController::EVIDENCE_DISK);
+            $payment->evidence_path = SecureUpload::store($request->file('evidence'), 'evidence', 'payment_evidence', MemberPaymentController::EVIDENCE_DISK, SecureUpload::EVIDENCE_EXTENSIONS)['path'];
         }
 
         $payment->save();
@@ -201,13 +204,13 @@ class PaymentController extends Controller
     {
         $this->authorizeAdmin($request);
 
-        $payment->load(['user', 'academicSession', 'reviewer']);
+        $payment->load(['user', 'academicSession', 'reviewer', 'resource']);
 
         return view('admin.payments.show', [
             'user' => $request->user(),
             'payment' => $payment,
             'history' => Payment::query()
-                ->with('academicSession')
+                ->with(['academicSession', 'resource'])
                 ->where('user_id', $payment->user_id)
                 ->whereKeyNot($payment->id)
                 ->where('status', '!=', Payment::STATUS_AWAITING)
@@ -278,6 +281,7 @@ class PaymentController extends Controller
     {
         return $request->validate([
             'status' => ['nullable', Rule::in(Payment::STATUSES)],
+            'type' => ['nullable', Rule::in([Payment::TYPE_DUES, Payment::TYPE_RESOURCE])],
             'academic_session_id' => ['nullable', 'integer'],
             'semester' => ['nullable', Rule::in([...PriceSetting::SEMESTERS, 'Full'])],
             'level_id' => ['nullable', 'integer'],
@@ -292,12 +296,14 @@ class PaymentController extends Controller
         // Unpaid drafts only matter to the member; admins see them only when asked for.
         return Payment::query()
             ->when($status, fn ($query) => $query->where('status', $status), fn ($query) => $query->where('status', '!=', Payment::STATUS_AWAITING))
+            ->when($filters['type'] ?? null, fn ($query, $type) => $query->where('type', $type))
             ->when($filters['academic_session_id'] ?? null, fn ($query, $id) => $query->where('academic_session_id', $id))
             ->when($filters['semester'] ?? null, fn ($query, $semester) => $semester === 'Full' ? $query->whereNull('semester') : $query->where('semester', $semester))
             ->when($filters['level_id'] ?? null, fn ($query, $id) => $query->where('level_id', $id))
             ->when($filters['q'] ?? null, function ($query, $search) {
                 $query->where(function ($query) use ($search) {
                     $query->where('reference', strtoupper($search))
+                        ->orWhereHas('resource', fn ($query) => $query->where('title', 'like', "%{$search}%"))
                         ->orWhereHas('user', function ($query) use ($search) {
                             $query->where('matno', 'like', "%{$search}%")
                                 ->orWhere('email', 'like', "%{$search}%")

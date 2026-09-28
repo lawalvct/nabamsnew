@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Auth;
 use App\Http\Controllers\Controller;
 use App\Models\AppSetting;
 use App\Models\User;
+use App\Support\SecureUpload;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -49,7 +50,7 @@ class RegisteredUserController extends Controller
             'member_type' => ['required', 'string', 'in:Regular,Part-time,Alumni'],
             'security_answer' => ['required', 'regex:/^\d{1,2}$/'],
             'password' => ['required', 'confirmed', Password::min(8)],
-            'passport_photograph' => ['nullable', 'image', 'max:2048'],
+            'passport_photograph' => ['nullable', 'file', 'extensions:jpg,jpeg,png,webp', 'mimes:jpg,jpeg,png,webp', 'max:5120'],
             'whatsapp_number' => ['nullable', 'string', 'max:30'],
             'home_address' => ['nullable', 'string', 'max:1000'],
             'website' => ['nullable', 'size:0'],
@@ -67,7 +68,9 @@ class RegisteredUserController extends Controller
         }
 
         [$firstname, $lastname] = $this->splitFullName($validated['full_name']);
-        $imagePath = $request->file('passport_photograph')?->store('passport_photographs', 'public');
+        $imagePath = $request->hasFile('passport_photograph')
+            ? SecureUpload::storeImage($request->file('passport_photograph'), 'passport_photograph', 'passport_photographs', 'public', 800)
+            : null;
 
         $user = User::create([
             'firstname' => $firstname,

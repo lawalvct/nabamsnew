@@ -6,6 +6,7 @@ use App\Models\BankAccount;
 use App\Models\Payment;
 use App\Notifications\PaymentStatusChanged;
 use App\Support\PaymentRequirement;
+use App\Support\SecureUpload;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -26,7 +27,7 @@ class PaymentController extends Controller
             'user' => $user,
             'requirement' => PaymentRequirement::for($user),
             'payments' => $user->payments()
-                ->with('academicSession')
+                ->with(['academicSession', 'resource'])
                 ->where('status', '!=', Payment::STATUS_AWAITING)
                 ->latest('id')
                 ->paginate(15),
@@ -46,12 +47,32 @@ class PaymentController extends Controller
         ]);
     }
 
+    /**
+     * Checkout page for a single payment (used for resource purchases).
+     */
+    public function show(Request $request, Payment $payment): View|RedirectResponse
+    {
+        abort_unless($payment->user_id === $request->user()->id, 403);
+
+        if (! $payment->isResourcePurchase()) {
+            return redirect()->route('payments.create');
+        }
+
+        $payment->load('resource');
+
+        return view('payments.show', [
+            'user' => $request->user(),
+            'payment' => $payment,
+            'bankAccounts' => BankAccount::active()->ordered()->get(),
+        ]);
+    }
+
     public function submit(Request $request, Payment $payment): RedirectResponse
     {
         abort_unless($payment->user_id === $request->user()->id, 403);
 
         if (! $payment->canBeSubmitted()) {
-            return redirect()->route('payments.create')->with('error', 'This payment has already been submitted.');
+            return redirect($this->checkoutUrl($payment))->with('error', 'This payment has already been submitted.');
         }
 
         $validated = $request->validate([
@@ -59,15 +80,17 @@ class PaymentController extends Controller
             'amount_paid' => ['required', 'integer', 'min:1', 'max:100000000'],
             'payer_name' => ['required', 'string', 'max:150'],
             'paid_at' => ['required', 'date', 'before_or_equal:today'],
-            'evidence' => ['required', 'file', 'mimes:jpg,jpeg,png,webp,pdf', 'max:5120'],
+            'evidence' => ['required', 'file', 'extensions:jpg,jpeg,png,webp,pdf', 'mimes:jpg,jpeg,png,webp,pdf', 'max:5120'],
         ], [
             'evidence.required' => 'Please upload your transfer receipt or evidence of payment.',
             'evidence.mimes' => 'Upload the evidence as an image (JPG, PNG, WEBP) or a PDF.',
+            'evidence.extensions' => 'Upload the evidence as an image (JPG, PNG, WEBP) or a PDF.',
             'evidence.max' => 'The evidence file must not be larger than 5MB.',
         ]);
 
         $bankAccount = BankAccount::findOrFail($validated['bank_account_id']);
         $previousEvidence = $payment->evidence_path;
+        $evidence = SecureUpload::store($request->file('evidence'), 'evidence', 'payment_evidence', self::EVIDENCE_DISK, SecureUpload::EVIDENCE_EXTENSIONS);
 
         $payment->update([
             'bank_account_id' => $bankAccount->id,
@@ -75,7 +98,7 @@ class PaymentController extends Controller
             'amount_paid' => $validated['amount_paid'],
             'payer_name' => $validated['payer_name'],
             'paid_at' => $validated['paid_at'],
-            'evidence_path' => $request->file('evidence')->store('payment_evidence', self::EVIDENCE_DISK),
+            'evidence_path' => $evidence['path'],
             'status' => Payment::STATUS_PENDING,
             'submitted_at' => now(),
             'reviewed_at' => null,
@@ -90,8 +113,7 @@ class PaymentController extends Controller
 
         PaymentStatusChanged::sendTo($payment);
 
-        return redirect()
-            ->route('payments.create')
+        return redirect($this->checkoutUrl($payment))
             ->with('success', 'Payment evidence submitted. Please allow up to 24 hours for an admin to verify it.');
     }
 
@@ -101,9 +123,10 @@ class PaymentController extends Controller
 
         abort_unless($payment->evidence_path && Storage::disk(self::EVIDENCE_DISK)->exists($payment->evidence_path), 404);
 
-        return response()->file(Storage::disk(self::EVIDENCE_DISK)->path($payment->evidence_path), [
-            'Cache-Control' => 'private, max-age=0, no-store',
-        ]);
+        return response()->file(
+            Storage::disk(self::EVIDENCE_DISK)->path($payment->evidence_path),
+            SecureUpload::responseHeaders(pathinfo($payment->evidence_path, PATHINFO_EXTENSION)),
+        );
     }
 
     public function receipt(Request $request, Payment $payment): Response
@@ -112,11 +135,16 @@ class PaymentController extends Controller
 
         abort_unless($payment->isApproved(), 404);
 
-        $payment->loadMissing(['user', 'academicSession']);
+        $payment->loadMissing(['user', 'academicSession', 'resource']);
 
         return Pdf::loadView('payments.receipt-pdf', ['payment' => $payment])
             ->setPaper('a4')
             ->download("nabams-receipt-{$payment->reference}.pdf");
+    }
+
+    private function checkoutUrl(Payment $payment): string
+    {
+        return $payment->isResourcePurchase() ? route('payments.show', $payment) : route('payments.create');
     }
 
     private function authorizeView(Request $request, Payment $payment): void
