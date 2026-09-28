@@ -21,7 +21,11 @@
                     <p class="mt-2 text-sm font-semibold text-[#F2F2F2]/75">{{ $member->email }}</p>
                 </div>
             </div>
-            <a href="{{ route('admin.members.edit', $member) }}" class="inline-flex justify-center rounded-lg bg-[#F5B400] px-5 py-3 text-sm font-black text-[#0A2A6B] transition hover:bg-[#ffd15c]">Edit Member</a>
+            <div class="flex flex-wrap gap-3">
+                <a href="{{ route('admin.payments.index', ['q' => $member->matno ?: $member->email]) }}" class="inline-flex justify-center rounded-lg border border-white/25 px-5 py-3 text-sm font-black text-white transition hover:bg-white/10">Payments</a>
+                <a href="{{ route('admin.payments.create', ['member' => $member->matno ?: $member->email]) }}" class="inline-flex justify-center rounded-lg border border-white/25 px-5 py-3 text-sm font-black text-white transition hover:bg-white/10">Record Payment</a>
+                <a href="{{ route('admin.members.edit', $member) }}" class="inline-flex justify-center rounded-lg bg-[#F5B400] px-5 py-3 text-sm font-black text-[#0A2A6B] transition hover:bg-[#ffd15c]">Edit Member</a>
+            </div>
         </div>
     </section>
 

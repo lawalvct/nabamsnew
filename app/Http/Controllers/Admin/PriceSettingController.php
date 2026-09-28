@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\AcademicSession;
+use App\Models\AppSetting;
 use App\Models\Level;
 use App\Models\PriceSetting;
 use Illuminate\Http\RedirectResponse;
@@ -44,7 +45,31 @@ class PriceSettingController extends Controller
             'semesters' => PriceSetting::SEMESTERS,
             'currentSession' => AcademicSession::current()->first(),
             'activeTotal' => PriceSetting::active()->count(),
+            'levelsWithoutPrice' => $this->levelsWithoutPrice(),
         ]);
+    }
+
+    /**
+     * Levels that currently have nothing to pay, so their members are never locked out.
+     */
+    private function levelsWithoutPrice()
+    {
+        $session = AcademicSession::current()->first();
+
+        if (! $session || AppSetting::paymentRequirementMode() === AppSetting::PAYMENT_OFF) {
+            return collect();
+        }
+
+        $semester = AppSetting::paymentRequirementMode() === AppSetting::PAYMENT_SESSION_SEMESTER
+            ? $session->current_semester
+            : null;
+
+        $pricedLevelIds = PriceSetting::active()
+            ->where('academic_session_id', $session->id)
+            ->when($semester, fn ($query) => $query->where('semester', $semester))
+            ->pluck('level_id');
+
+        return Level::active()->whereNotIn('id', $pricedLevelIds)->orderBy('sort_order')->pluck('name');
     }
 
     public function create(Request $request): View

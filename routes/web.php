@@ -8,6 +8,7 @@ use App\Http\Controllers\Admin\ElectionPositionController;
 use App\Http\Controllers\Admin\ElectionVoteAdjustmentController;
 use App\Http\Controllers\Admin\ElectionVoteController;
 use App\Http\Controllers\Admin\MemberController;
+use App\Http\Controllers\Admin\PaymentController as AdminPaymentController;
 use App\Http\Controllers\Admin\PriceSettingController;
 use App\Http\Controllers\Admin\SettingController;
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
@@ -17,7 +18,9 @@ use App\Http\Controllers\Auth\RegisteredUserController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ElectionController;
 use App\Http\Controllers\MemberDirectoryController;
+use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\ReceiptVerificationController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -38,6 +41,10 @@ Route::get('/our-members/photo/{directory}/{filename}', [MemberDirectoryControll
     ->where('filename', '[A-Za-z0-9._-]+')
     ->name('members.photo');
 
+Route::get('/verify-receipt', ReceiptVerificationController::class)
+    ->middleware('throttle:30,1')
+    ->name('receipts.verify');
+
 Route::middleware('guest')->group(function () {
     Route::get('/register', [RegisteredUserController::class, 'create'])->name('register');
     Route::post('/register', [RegisteredUserController::class, 'store'])->middleware('throttle:5,1');
@@ -51,8 +58,15 @@ Route::middleware('guest')->group(function () {
     Route::post('/reset-password', [NewPasswordController::class, 'store'])->middleware('throttle:5,1')->name('password.update');
 });
 
-Route::middleware('auth')->group(function () {
+Route::middleware(['auth', 'payment.verified'])->group(function () {
     Route::get('/dashboard', DashboardController::class)->name('dashboard');
+    Route::get('/dashboard/transactions', [PaymentController::class, 'index'])->name('payments.index');
+    Route::get('/dashboard/payments/pay', [PaymentController::class, 'create'])->name('payments.create');
+    Route::post('/dashboard/payments/{payment}/submit', [PaymentController::class, 'submit'])
+        ->middleware('throttle:10,1')
+        ->name('payments.submit');
+    Route::get('/dashboard/payments/{payment}/evidence', [PaymentController::class, 'evidence'])->name('payments.evidence');
+    Route::get('/dashboard/payments/{payment}/receipt', [PaymentController::class, 'receipt'])->name('payments.receipt');
     Route::get('/dashboard/election', [ElectionController::class, 'index'])->name('election.index');
     Route::post('/dashboard/election/vote', [ElectionController::class, 'vote'])
         ->middleware('throttle:10,1')
@@ -93,6 +107,13 @@ Route::middleware('auth')->group(function () {
         Route::resource('price-settings', PriceSettingController::class)
             ->parameters(['price-settings' => 'priceSetting'])
             ->except('show');
+        Route::get('/payments', [AdminPaymentController::class, 'index'])->name('payments.index');
+        Route::get('/payments/export', [AdminPaymentController::class, 'export'])->name('payments.export');
+        Route::get('/payments/record', [AdminPaymentController::class, 'create'])->name('payments.create');
+        Route::post('/payments/record', [AdminPaymentController::class, 'store'])->middleware('throttle:20,1')->name('payments.store');
+        Route::get('/payments/{payment}', [AdminPaymentController::class, 'show'])->name('payments.show');
+        Route::patch('/payments/{payment}/approve', [AdminPaymentController::class, 'approve'])->name('payments.approve');
+        Route::patch('/payments/{payment}/reject', [AdminPaymentController::class, 'reject'])->name('payments.reject');
         Route::resource('bank-accounts', BankAccountController::class)
             ->parameters(['bank-accounts' => 'bankAccount'])
             ->except('show');

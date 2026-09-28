@@ -93,6 +93,43 @@
                             <span class="mt-3 block text-xs font-black text-[#F5B400]">{{ $message }}</span>
                         @enderror
                     </div>
+                    <div class="border-t border-[#0A2A6B]/10 pt-8">
+                        @php
+                            $paymentOptions = [
+                                'session_semester' => ['Session + Semester', 'Members pay every semester. Switching the semester locks members until they pay for it.', 'border-[#1FA774]/20 bg-[#1FA774]/10'],
+                                'session' => ['Session only', 'Members pay once per session (all semester prices combined). Switching the session locks members.', 'border-[#0A2A6B]/15 bg-[#0A2A6B]/5'],
+                                'off' => ['Off', 'Nobody is locked out of the dashboard. Members can still pay from the Fees page.', 'border-[#F5B400]/40 bg-[#F5B400]/15'],
+                            ];
+                        @endphp
+                        <div class="flex items-start justify-between gap-4">
+                            <div>
+                                <p class="text-sm font-black uppercase tracking-wide text-[#F5B400]">Payments</p>
+                                <h2 class="mt-2 text-2xl font-black text-[#0A2A6B]">Dashboard payment rule</h2>
+                                <p class="mt-3 text-sm leading-7 text-[#2E2E2E]/70">
+                                    Members without an approved payment for the current period can only use the Fees, Transactions and Profile pages. Members whose level has no price set are never locked.
+                                </p>
+                            </div>
+                            <span class="shrink-0 rounded-lg bg-[#0A2A6B]/10 px-3 py-2 text-xs font-black text-[#0A2A6B]">
+                                {{ $paymentOptions[$paymentSetting->value][0] ?? $paymentSetting->value }}
+                            </span>
+                        </div>
+
+                        <div class="mt-5 grid gap-3">
+                            @foreach ($paymentOptions as $value => [$label, $description, $tone])
+                                <label class="flex cursor-pointer items-start gap-3 rounded-lg border {{ $tone }} p-4 text-sm font-bold text-[#0A2A6B]">
+                                    <input type="radio" name="payment_requirement" value="{{ $value }}" @checked(old('payment_requirement', $paymentSetting->value) === $value) class="mt-1 h-4 w-4 border-[#0A2A6B]/20 text-[#1FA774]">
+                                    <span>
+                                        {{ $label }}
+                                        <span class="mt-1 block font-normal leading-6 text-[#2E2E2E]/70">{{ $description }}</span>
+                                    </span>
+                                </label>
+                            @endforeach
+                        </div>
+
+                        @error('payment_requirement')
+                            <span class="mt-3 block text-xs font-black text-[#F5B400]">{{ $message }}</span>
+                        @enderror
+                    </div>
                 </div>
 
                 <button type="submit" class="mt-6 rounded-lg bg-[#1FA774] px-6 py-3 text-sm font-black text-white transition hover:bg-[#198b61]">Save Settings</button>
@@ -102,7 +139,7 @@
         <div class="rounded-lg bg-white p-6 shadow-sm ring-1 ring-[#0A2A6B]/10 sm:p-8">
             <p class="text-sm font-black uppercase tracking-wide text-[#F5B400]">Current Database Values</p>
 
-            @foreach ([$registrationSetting, $electionSetting] as $setting)
+            @foreach ([$registrationSetting, $electionSetting, $paymentSetting] as $setting)
                 <dl class="mt-5 grid gap-4 text-sm">
                     <div class="rounded-lg bg-[#F2F2F2] p-4">
                         <dt class="font-bold text-[#2E2E2E]/60">Name</dt>

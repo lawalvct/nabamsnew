@@ -18,6 +18,7 @@ class SettingController extends Controller
         return view('admin.settings.edit', [
             'electionSetting' => AppSetting::election(),
             'registrationSetting' => AppSetting::registration(),
+            'paymentSetting' => AppSetting::paymentRequirement(),
         ]);
     }
 
@@ -28,6 +29,7 @@ class SettingController extends Controller
         $validated = $request->validate([
             'election' => ['required', Rule::in(['On', 'Off'])],
             'registration' => ['required', Rule::in(['On', 'Off'])],
+            'payment_requirement' => ['sometimes', 'required', Rule::in(AppSetting::PAYMENT_REQUIREMENTS)],
         ]);
 
         AppSetting::election()->update([
@@ -39,6 +41,13 @@ class SettingController extends Controller
             'value' => $validated['registration'],
             'active' => 'Yes',
         ]);
+
+        if (isset($validated['payment_requirement'])) {
+            AppSetting::paymentRequirement()->update([
+                'value' => $validated['payment_requirement'],
+                'active' => 'Yes',
+            ]);
+        }
 
         return back()->with('success', 'Settings updated successfully.');
     }

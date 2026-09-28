@@ -45,7 +45,10 @@
                     <span class="grid h-9 w-9 shrink-0 place-items-center rounded-lg transition {{ $iconClass }}">
                         @include('partials.dashboard.menu-icon', ['name' => $menu['icon'], 'class' => 'h-5 w-5'])
                     </span>
-                    <span>{{ $menu['label'] }}</span>
+                    <span class="flex-1">{{ $menu['label'] }}</span>
+                    @if (! empty($menu['badge']))
+                        <span class="rounded-full bg-red-500 px-2 py-0.5 text-xs font-black text-white" title="{{ $menu['badge'] }} awaiting verification">{{ $menu['badge'] }}</span>
+                    @endif
                 </a>
             @endforeach
         </div>

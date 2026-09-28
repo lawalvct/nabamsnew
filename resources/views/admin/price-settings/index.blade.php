@@ -26,6 +26,13 @@
         </div>
     @endif
 
+    @if ($levelsWithoutPrice->isNotEmpty())
+        <div class="mt-6 rounded-lg border border-[#F5B400]/40 bg-[#F5B400]/15 px-5 py-4 text-sm text-[#0A2A6B]">
+            <p class="font-black">No active price for the current period: {{ $levelsWithoutPrice->implode(', ') }}</p>
+            <p class="mt-1">Members in these levels can use the dashboard without paying. Add a price if they should pay.</p>
+        </div>
+    @endif
+
     <section class="mt-6 grid gap-5 md:grid-cols-3">
         <div class="rounded-lg bg-white p-6 shadow-sm ring-1 ring-[#0A2A6B]/10">
             <p class="text-sm font-black uppercase tracking-wide text-[#F5B400]">Matching Prices</p>
