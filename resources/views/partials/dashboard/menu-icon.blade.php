@@ -61,6 +61,12 @@
         </svg>
         @break
 
+    @case('bank-accounts')
+        <svg class="{{ $class }}" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" aria-hidden="true">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M3 10h18M5 10v8m4-8v8m6-8v8m4-8v8M3 21h18M12 3l9 5H3l9-5Z" />
+        </svg>
+        @break
+
     @case('settings')
         <svg class="{{ $class }}" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" aria-hidden="true">
             <path stroke-linecap="round" stroke-linejoin="round" d="M12 8a4 4 0 1 0 0 8 4 4 0 0 0 0-8Zm8 4a7.9 7.9 0 0 0-.2-1.7l2-1.5-2-3.5-2.4 1a8 8 0 0 0-3-1.7L14 2h-4l-.4 2.6a8 8 0 0 0-3 1.7l-2.4-1-2 3.5 2 1.5A7.9 7.9 0 0 0 4 12c0 .6.1 1.2.2 1.7l-2 1.5 2 3.5 2.4-1a8 8 0 0 0 3 1.7L10 22h4l.4-2.6a8 8 0 0 0 3-1.7l2.4 1 2-3.5-2-1.5c.1-.5.2-1.1.2-1.7Z" />

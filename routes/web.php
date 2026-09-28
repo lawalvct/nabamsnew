@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Admin\AcademicSessionController;
 use App\Http\Controllers\Admin\AdministratorController;
+use App\Http\Controllers\Admin\BankAccountController;
 use App\Http\Controllers\Admin\ElectionAspirantController;
 use App\Http\Controllers\Admin\ElectionPositionController;
 use App\Http\Controllers\Admin\ElectionVoteAdjustmentController;
@@ -91,6 +92,9 @@ Route::middleware('auth')->group(function () {
 
         Route::resource('price-settings', PriceSettingController::class)
             ->parameters(['price-settings' => 'priceSetting'])
+            ->except('show');
+        Route::resource('bank-accounts', BankAccountController::class)
+            ->parameters(['bank-accounts' => 'bankAccount'])
             ->except('show');
 
         Route::get('/settings', [SettingController::class, 'edit'])->name('settings.edit');
