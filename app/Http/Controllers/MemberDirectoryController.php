@@ -3,8 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
+use App\Support\MemberWallOrder;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\View\View;
 
@@ -23,24 +26,25 @@ class MemberDirectoryController extends Controller
             $previewSeed = random_int(1, 999999);
         }
 
-        $previewMembers = $this->memberImageQuery()
-            ->inRandomOrder($previewSeed)
-            ->limit(6)
-            ->get();
+        $wallCandidates = $this->memberImageQuery()->get(['id', 'created_at']);
 
-        $members = User::query()
-            ->where('role', 'Member')
-            ->where('is_active', 'Yes')
-            ->where('is_ban', 'No')
-            ->whereNotNull('image')
-            ->where('image', '!=', '')
-            ->whereNotIn('id', $previewMembers->pluck('id'))
-            ->inRandomOrder($seed)
-            ->paginate(96)
-            ->appends([
-                'seed' => $seed,
-                'preview_seed' => $previewSeed,
-            ]);
+        $previewIds = array_slice(MemberWallOrder::ids($wallCandidates, $previewSeed), 0, 6);
+        $previewMembers = $this->membersInOrder($previewIds);
+
+        $wallIds = array_values(array_diff(MemberWallOrder::ids($wallCandidates, $seed), $previewIds));
+        $perPage = 96;
+        $page = LengthAwarePaginator::resolveCurrentPage();
+
+        $members = (new LengthAwarePaginator(
+            $this->membersInOrder(array_slice($wallIds, ($page - 1) * $perPage, $perPage)),
+            count($wallIds),
+            $perPage,
+            $page,
+            ['path' => $request->url()],
+        ))->appends([
+            'seed' => $seed,
+            'preview_seed' => $previewSeed,
+        ]);
 
         if ($request->expectsJson()) {
             $offset = ($members->currentPage() - 1) * $members->perPage();
@@ -62,6 +66,11 @@ class MemberDirectoryController extends Controller
             'previewMembers' => $previewMembers,
             'seed' => $seed,
             'previewSeed' => $previewSeed,
+            'totalMembers' => $wallCandidates->count(),
+            'newMemberJoinTimes' => $wallCandidates
+                ->filter(fn (User $member) => MemberWallOrder::isNew($member->created_at))
+                ->map(fn (User $member) => $member->created_at->getTimestamp())
+                ->values(),
         ]);
     }
 
@@ -86,6 +95,24 @@ class MemberDirectoryController extends Controller
         return response()->file(Storage::disk('public')->path($path), [
             'Cache-Control' => 'public, max-age=604800',
         ]);
+    }
+
+    /**
+     * @param  array<int, int>  $ids
+     */
+    private function membersInOrder(array $ids): Collection
+    {
+        if ($ids === []) {
+            return new Collection();
+        }
+
+        $positions = array_flip($ids);
+
+        return User::query()
+            ->whereIn('id', $ids)
+            ->get()
+            ->sortBy(fn (User $member) => $positions[$member->id])
+            ->values();
     }
 
     private function memberImageQuery()

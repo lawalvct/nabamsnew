@@ -4,7 +4,7 @@
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
 
-        <title>Login - NABAMS</title>
+        <title>Reset Password - NABAMS</title>
         <link rel="icon" type="image/png" href="{{ asset('favicon.png') }}">
 
         @fonts
@@ -29,9 +29,9 @@
                 </a>
 
                 <div class="max-w-xl">
-                    <p class="text-sm font-black uppercase tracking-wide text-[#F5B400]">Member access</p>
-                    <h1 class="mt-4 text-5xl font-black leading-tight">Welcome back to your dashboard.</h1>
-                    <p class="mt-5 text-lg leading-8 text-[#F2F2F2]/80">Sign in to manage your NABAMS profile, membership information, contest updates, and student resources.</p>
+                    <p class="text-sm font-black uppercase tracking-wide text-[#F5B400]">Secure access</p>
+                    <h1 class="mt-4 text-5xl font-black leading-tight">Choose a new password.</h1>
+                    <p class="mt-5 text-lg leading-8 text-[#F2F2F2]/80">Use a fresh password you do not use anywhere else. Your reset link is valid for a limited time.</p>
                 </div>
 
                 <p class="text-sm text-[#F2F2F2]/70">National Association of Business Administration and Management Students</p>
@@ -50,15 +50,9 @@
 
                     <div class="rounded-lg bg-white p-6 shadow-xl ring-1 ring-[#0A2A6B]/10 sm:p-8">
                         <div>
-                            <p class="text-sm font-black uppercase tracking-wide text-[#F5B400]">Login</p>
-                            <h2 class="mt-2 text-3xl font-black text-[#0A2A6B]">Dashboard access</h2>
+                            <p class="text-sm font-black uppercase tracking-wide text-[#F5B400]">Reset Password</p>
+                            <h2 class="mt-2 text-3xl font-black text-[#0A2A6B]">Set a new password</h2>
                         </div>
-
-                        @if (session('status'))
-                            <div class="mt-5 rounded-lg border border-[#1FA774]/20 bg-[#1FA774]/10 p-4 text-sm text-[#0A2A6B]">
-                                {{ session('status') }}
-                            </div>
-                        @endif
 
                         @if ($errors->any())
                             <div class="mt-5 rounded-lg border border-red-200 bg-red-50 p-4 text-sm text-red-700">
@@ -66,34 +60,31 @@
                             </div>
                         @endif
 
-                        <form action="{{ route('login') }}" method="POST" class="mt-7 grid gap-5">
+                        <form action="{{ route('password.update') }}" method="POST" class="mt-7 grid gap-5">
                             @csrf
+                            <input type="hidden" name="token" value="{{ $token }}">
 
                             <label class="grid gap-2 text-sm font-bold text-[#0A2A6B]">
                                 Email Address
-                                <input name="email" type="email" value="{{ old('email') }}" required autofocus class="rounded-lg border border-[#0A2A6B]/15 bg-white px-4 py-3 font-normal text-[#2E2E2E] outline-none transition placeholder:text-[#2E2E2E]/45 focus:border-[#F5B400] focus:ring-4 focus:ring-[#F5B400]/20" placeholder="you@example.com">
+                                <input name="email" type="email" value="{{ old('email', $email) }}" required class="rounded-lg border border-[#0A2A6B]/15 bg-white px-4 py-3 font-normal text-[#2E2E2E] outline-none transition placeholder:text-[#2E2E2E]/45 focus:border-[#F5B400] focus:ring-4 focus:ring-[#F5B400]/20" placeholder="you@example.com">
                             </label>
 
                             <label class="grid gap-2 text-sm font-bold text-[#0A2A6B]">
-                                Password
-                                <input name="password" type="password" required class="rounded-lg border border-[#0A2A6B]/15 bg-white px-4 py-3 font-normal text-[#2E2E2E] outline-none transition placeholder:text-[#2E2E2E]/45 focus:border-[#F5B400] focus:ring-4 focus:ring-[#F5B400]/20" placeholder="Your password">
+                                New Password
+                                <input name="password" type="password" required autocomplete="new-password" class="rounded-lg border border-[#0A2A6B]/15 bg-white px-4 py-3 font-normal text-[#2E2E2E] outline-none transition placeholder:text-[#2E2E2E]/45 focus:border-[#F5B400] focus:ring-4 focus:ring-[#F5B400]/20" placeholder="At least 8 characters with letters and numbers">
                             </label>
 
-                            <div class="flex items-center justify-between gap-4">
-                                <label class="flex items-center gap-3 text-sm font-semibold text-[#2E2E2E]/75">
-                                    <input name="remember" type="checkbox" value="1" class="h-4 w-4 rounded border-[#0A2A6B]/20 text-[#1FA774] focus:ring-[#1FA774]">
-                                    Remember me
-                                </label>
+                            <label class="grid gap-2 text-sm font-bold text-[#0A2A6B]">
+                                Confirm New Password
+                                <input name="password_confirmation" type="password" required autocomplete="new-password" class="rounded-lg border border-[#0A2A6B]/15 bg-white px-4 py-3 font-normal text-[#2E2E2E] outline-none transition placeholder:text-[#2E2E2E]/45 focus:border-[#F5B400] focus:ring-4 focus:ring-[#F5B400]/20" placeholder="Repeat your new password">
+                            </label>
 
-                                <a href="{{ route('password.request') }}" class="text-sm font-black text-[#0A2A6B] hover:text-[#1FA774]">Forgot password?</a>
-                            </div>
-
-                            <button type="submit" class="rounded-lg bg-[#1FA774] px-6 py-3 text-sm font-black text-white transition hover:bg-[#198b61]">Login to Dashboard</button>
+                            <button type="submit" class="rounded-lg bg-[#1FA774] px-6 py-3 text-sm font-black text-white transition hover:bg-[#198b61]">Reset Password</button>
                         </form>
 
                         <p class="mt-6 text-center text-sm text-[#2E2E2E]/75">
-                            New member?
-                            <a href="{{ route('register') }}" class="font-black text-[#0A2A6B] hover:text-[#1FA774]">Create an account</a>
+                            Need a new link?
+                            <a href="{{ route('password.request') }}" class="font-black text-[#0A2A6B] hover:text-[#1FA774]">Request another one</a>
                         </p>
                     </div>
                 </div>

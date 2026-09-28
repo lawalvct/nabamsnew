@@ -35,6 +35,18 @@
             <span class="text-sm font-bold text-[#F5B400]">{{ $message }}</span>
         @enderror
     </label>
+
+    <label class="grid gap-2 text-sm font-bold text-[#0A2A6B]">
+        Current Semester
+        <select name="current_semester" class="rounded-lg border border-[#0A2A6B]/15 bg-white px-4 py-3 font-normal text-[#2E2E2E] outline-none transition focus:border-[#F5B400] focus:ring-4 focus:ring-[#F5B400]/20">
+            @foreach (\App\Models\PriceSetting::SEMESTERS as $semester)
+                <option value="{{ $semester }}" @selected(old('current_semester', $academicSession->current_semester ?? 'First') === $semester)>{{ $semester }} Semester</option>
+            @endforeach
+        </select>
+        @error('current_semester')
+            <span class="text-sm font-bold text-[#F5B400]">{{ $message }}</span>
+        @enderror
+    </label>
 </div>
 
 @php

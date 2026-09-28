@@ -51,7 +51,7 @@ class AppServiceProvider extends ServiceProvider
                 ['label' => 'Members', 'href' => route('admin.members.index'), 'icon' => 'members', 'active' => request()->routeIs('admin.members.*')],
                 ['label' => 'Final Year Projects', 'href' => '#final-year-projects', 'icon' => 'projects', 'active' => false],
                 ['label' => 'Levels', 'href' => '#levels', 'icon' => 'levels', 'active' => false],
-                ['label' => 'Price Settings', 'href' => '#price-settings', 'icon' => 'price-settings', 'active' => false],
+                ['label' => 'Price Settings', 'href' => route('admin.price-settings.index'), 'icon' => 'price-settings', 'active' => request()->routeIs('admin.price-settings.*')],
                 ['label' => 'Settings', 'href' => route('admin.settings.edit'), 'icon' => 'settings', 'active' => request()->routeIs('admin.settings.*')],
                 ['label' => 'Admins', 'href' => route('admin.admins.index'), 'icon' => 'admins', 'active' => request()->routeIs('admin.admins.*')],
                 ['label' => 'Profile', 'href' => route('profile.edit'), 'icon' => 'profile', 'active' => request()->routeIs('profile.*')],

@@ -34,6 +34,9 @@
         <div class="rounded-lg bg-white p-6 shadow-sm ring-1 ring-[#0A2A6B]/10">
             <p class="text-sm font-black uppercase tracking-wide text-[#F5B400]">Current Session</p>
             <p class="mt-3 text-3xl font-black text-[#1FA774]">{{ $currentSession?->name ?? 'Not set' }}</p>
+            @if ($currentSession)
+                <p class="mt-1 text-sm font-bold text-[#0A2A6B]">{{ $currentSession->current_semester }} Semester</p>
+            @endif
         </div>
         <div class="rounded-lg bg-white p-6 shadow-sm ring-1 ring-[#0A2A6B]/10">
             <p class="text-sm font-black uppercase tracking-wide text-[#F5B400]">Rule</p>
@@ -52,6 +55,7 @@
                     <tr>
                         <th class="px-5 py-3 text-left text-xs font-black uppercase tracking-wide text-[#2E2E2E]/65">Name</th>
                         <th class="px-5 py-3 text-left text-xs font-black uppercase tracking-wide text-[#2E2E2E]/65">Years</th>
+                        <th class="px-5 py-3 text-left text-xs font-black uppercase tracking-wide text-[#2E2E2E]/65">Semester</th>
                         <th class="px-5 py-3 text-left text-xs font-black uppercase tracking-wide text-[#2E2E2E]/65">Current</th>
                         <th class="px-5 py-3 text-left text-xs font-black uppercase tracking-wide text-[#2E2E2E]/65">Status</th>
                         <th class="px-5 py-3 text-right text-xs font-black uppercase tracking-wide text-[#2E2E2E]/65">Actions</th>
@@ -62,6 +66,7 @@
                         <tr>
                             <td class="px-5 py-4 font-black text-[#0A2A6B]">{{ $session->name }}</td>
                             <td class="px-5 py-4 text-sm font-semibold text-[#2E2E2E]/75">{{ $session->starts_at_year }} - {{ $session->ends_at_year }}</td>
+                            <td class="px-5 py-4 text-sm font-semibold text-[#2E2E2E]/75">{{ $session->current_semester }}</td>
                             <td class="px-5 py-4">
                                 <span class="rounded-full px-3 py-1 text-xs font-black {{ $session->is_current === 'Yes' ? 'bg-[#1FA774]/10 text-[#1FA774]' : 'bg-[#F2F2F2] text-[#2E2E2E]/70' }}">{{ $session->is_current }}</span>
                             </td>
@@ -70,6 +75,13 @@
                             </td>
                             <td class="px-5 py-4">
                                 <div class="flex justify-end gap-2">
+                                    @php($otherSemester = $session->current_semester === 'First' ? 'Second' : 'First')
+                                    <form action="{{ route('admin.academic-sessions.set-semester', $session) }}" method="POST">
+                                        @csrf
+                                        @method('PATCH')
+                                        <input type="hidden" name="current_semester" value="{{ $otherSemester }}">
+                                        <button type="submit" class="rounded-lg border border-[#0A2A6B]/20 px-3 py-2 text-xs font-black text-[#0A2A6B] transition hover:bg-[#0A2A6B] hover:text-white">Switch to {{ $otherSemester }}</button>
+                                    </form>
                                     @if ($session->is_current !== 'Yes')
                                         <form action="{{ route('admin.academic-sessions.make-current', $session) }}" method="POST">
                                             @csrf
@@ -90,7 +102,7 @@
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="5" class="px-5 py-10 text-center text-sm font-semibold text-[#2E2E2E]/65">No academic session has been created yet.</td>
+                            <td colspan="6" class="px-5 py-10 text-center text-sm font-semibold text-[#2E2E2E]/65">No academic session has been created yet.</td>
                         </tr>
                     @endforelse
                 </tbody>
@@ -103,11 +115,18 @@
                     <div class="flex items-start justify-between gap-4">
                         <div>
                             <h3 class="text-lg font-black text-[#0A2A6B]">{{ $session->name }}</h3>
-                            <p class="mt-1 text-sm font-semibold text-[#2E2E2E]/65">{{ $session->starts_at_year }} - {{ $session->ends_at_year }}</p>
+                            <p class="mt-1 text-sm font-semibold text-[#2E2E2E]/65">{{ $session->starts_at_year }} - {{ $session->ends_at_year }} &middot; {{ $session->current_semester }} Semester</p>
                         </div>
                         <span class="rounded-full px-3 py-1 text-xs font-black {{ $session->is_current === 'Yes' ? 'bg-[#1FA774]/10 text-[#1FA774]' : 'bg-white text-[#2E2E2E]/70' }}">{{ $session->is_current }}</span>
                     </div>
                     <div class="mt-4 flex flex-wrap gap-2">
+                        @php($otherSemester = $session->current_semester === 'First' ? 'Second' : 'First')
+                        <form action="{{ route('admin.academic-sessions.set-semester', $session) }}" method="POST">
+                            @csrf
+                            @method('PATCH')
+                            <input type="hidden" name="current_semester" value="{{ $otherSemester }}">
+                            <button type="submit" class="rounded-lg border border-[#0A2A6B]/20 bg-white px-3 py-2 text-xs font-black text-[#0A2A6B]">Switch to {{ $otherSemester }}</button>
+                        </form>
                         @if ($session->is_current !== 'Yes')
                             <form action="{{ route('admin.academic-sessions.make-current', $session) }}" method="POST">
                                 @csrf

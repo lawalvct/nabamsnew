@@ -5,28 +5,19 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 
-class AcademicSession extends Model
+class Level extends Model
 {
     protected $fillable = [
         'name',
-        'starts_at_year',
-        'ends_at_year',
-        'current_semester',
-        'is_current',
+        'sort_order',
         'is_active',
     ];
 
     protected function casts(): array
     {
         return [
-            'starts_at_year' => 'integer',
-            'ends_at_year' => 'integer',
+            'sort_order' => 'integer',
         ];
-    }
-
-    public function scopeCurrent(Builder $query): Builder
-    {
-        return $query->where('is_current', 'Yes');
     }
 
     public function scopeActive(Builder $query): Builder

@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\AcademicSession;
+use App\Models\PriceSetting;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -114,6 +115,19 @@ class AcademicSessionController extends Controller
         return back()->with('success', 'Current academic session updated successfully.');
     }
 
+    public function setSemester(Request $request, AcademicSession $academicSession): RedirectResponse
+    {
+        $this->authorizeAdmin($request);
+
+        $data = $request->validate([
+            'current_semester' => ['required', Rule::in(PriceSetting::SEMESTERS)],
+        ]);
+
+        $academicSession->update($data);
+
+        return back()->with('success', "{$academicSession->name} is now in the {$data['current_semester']} semester.");
+    }
+
     public function destroy(Request $request, AcademicSession $academicSession): RedirectResponse
     {
         $this->authorizeAdmin($request);
@@ -143,6 +157,7 @@ class AcademicSessionController extends Controller
             ],
             'starts_at_year' => ['required', 'integer', 'digits:4', 'min:2000'],
             'ends_at_year' => ['required', 'integer', 'digits:4', 'gte:starts_at_year'],
+            'current_semester' => ['required', Rule::in(PriceSetting::SEMESTERS)],
             'is_active' => ['required', Rule::in(['Yes', 'No'])],
         ]);
     }

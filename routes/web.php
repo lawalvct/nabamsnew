@@ -7,8 +7,11 @@ use App\Http\Controllers\Admin\ElectionPositionController;
 use App\Http\Controllers\Admin\ElectionVoteAdjustmentController;
 use App\Http\Controllers\Admin\ElectionVoteController;
 use App\Http\Controllers\Admin\MemberController;
+use App\Http\Controllers\Admin\PriceSettingController;
 use App\Http\Controllers\Admin\SettingController;
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
+use App\Http\Controllers\Auth\NewPasswordController;
+use App\Http\Controllers\Auth\PasswordResetLinkController;
 use App\Http\Controllers\Auth\RegisteredUserController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ElectionController;
@@ -40,6 +43,11 @@ Route::middleware('guest')->group(function () {
 
     Route::get('/login', [AuthenticatedSessionController::class, 'create'])->name('login');
     Route::post('/login', [AuthenticatedSessionController::class, 'store'])->middleware('throttle:5,1');
+
+    Route::get('/forgot-password', [PasswordResetLinkController::class, 'create'])->name('password.request');
+    Route::post('/forgot-password', [PasswordResetLinkController::class, 'store'])->middleware('throttle:5,1')->name('password.email');
+    Route::get('/reset-password/{token}', [NewPasswordController::class, 'create'])->name('password.reset');
+    Route::post('/reset-password', [NewPasswordController::class, 'store'])->middleware('throttle:5,1')->name('password.update');
 });
 
 Route::middleware('auth')->group(function () {
@@ -59,6 +67,8 @@ Route::middleware('auth')->group(function () {
     Route::prefix('admin')->name('admin.')->group(function () {
         Route::patch('/academic-sessions/{academicSession}/make-current', [AcademicSessionController::class, 'makeCurrent'])
             ->name('academic-sessions.make-current');
+        Route::patch('/academic-sessions/{academicSession}/semester', [AcademicSessionController::class, 'setSemester'])
+            ->name('academic-sessions.set-semester');
         Route::resource('academic-sessions', AcademicSessionController::class)
             ->parameters(['academic-sessions' => 'academicSession'])
             ->except('show');
@@ -78,6 +88,10 @@ Route::middleware('auth')->group(function () {
                 ->parameters(['aspirants' => 'aspirant'])
                 ->except('show');
         });
+
+        Route::resource('price-settings', PriceSettingController::class)
+            ->parameters(['price-settings' => 'priceSetting'])
+            ->except('show');
 
         Route::get('/settings', [SettingController::class, 'edit'])->name('settings.edit');
         Route::put('/settings', [SettingController::class, 'update'])->middleware('throttle:10,1')->name('settings.update');
