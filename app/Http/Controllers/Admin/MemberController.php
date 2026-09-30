@@ -68,9 +68,9 @@ class MemberController extends Controller
             'gender' => ['required', Rule::in(['Male', 'Female', 'Other'])],
             'email' => ['required', 'string', 'email', 'max:60', Rule::unique('users', 'email')],
             'phone' => ['required', 'string', 'max:30'],
-            'matno' => ['nullable', 'string', 'max:30', 'regex:/^(HBAF|NBAF)\/(2[1-5][A-Z]?)\/[0-9]{4}$/i', Rule::unique('users', 'matno')],
+            'matno' => ['nullable', 'string', 'max:30', 'regex:/^(HBAF|NBAF)\/(2[1-6][A-Z]?)\/[0-9]{4}$/i', Rule::unique('users', 'matno')],
         ], [
-            'matno.regex' => 'Matric number must be in the format HBAF/YY/0000 or NBAF/YY/0000, with an optional year letter (year 21-25).',
+            'matno.regex' => 'Matric number must be in the format HBAF/YY/0000 or NBAF/YY/0000, with an optional year letter (year 21-26).',
         ]);
 
         [$firstname, $lastname] = $this->splitFullName($validated['full_name']);
@@ -131,7 +131,7 @@ class MemberController extends Controller
             'gender' => ['nullable', Rule::in(['Male', 'Female', 'Other'])],
             'dob' => ['nullable', 'date', 'before:today'],
             'email' => ['required', 'string', 'email', 'max:60', Rule::unique('users', 'email')->ignore($member->id)],
-            'matno' => ['nullable', 'string', 'max:30', 'regex:/^(HBAF|NBAF)\/(2[1-5][A-Z]?)\/[0-9]{4}$/i', Rule::unique('users', 'matno')->ignore($member->id)],
+            'matno' => ['nullable', 'string', 'max:30', 'regex:/^(HBAF|NBAF)\/(2[1-6][A-Z]?)\/[0-9]{4}$/i', Rule::unique('users', 'matno')->ignore($member->id)],
             'phone' => ['required', 'string', 'max:30'],
             'whatsapp_number' => ['nullable', 'string', 'max:30'],
             'academic_level' => ['required', Rule::in(['ND1', 'ND2', 'ND3', 'HND1', 'HND2', 'HND3', 'GRADUATE'])],
@@ -142,7 +142,7 @@ class MemberController extends Controller
             'home_address' => ['nullable', 'string', 'max:1000'],
             'bio' => ['nullable', 'string', 'max:1500'],
         ], [
-            'matno.regex' => 'Matric number must be in the format HBAF/YY/0000 or NBAF/YY/0000, with an optional year letter (year 21-25).',
+            'matno.regex' => 'Matric number must be in the format HBAF/YY/0000 or NBAF/YY/0000, with an optional year letter (year 21-26).',
         ]);
 
         $validated['email'] = strtolower($validated['email']);
